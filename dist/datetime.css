@@ -2,6 +2,29 @@ fs-datetime {
 	position: relative;
 }
 
+fs-datetime .backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    outline: none;
+    overflow:visible;
+    pointer-events:none;
+    background:none !important;
+}
+
+fs-datetime .dialog {
+	position: absolute;
+    z-index: 51;
+    display: table;
+    width: 371px;
+    top: 35px;
+    outline: none;
+    left: 0;
+}
+
 fs-datetime .input {
 	width: 100px;
 }
@@ -10,17 +33,15 @@ fs-datetime.has-time .input {
 	width: 200px;
 }
 
-
 fs-datetime .dialog .wrap
  {
     background: #fff;
     box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     width: 372px;
-    height: 400px;
+    height: 385px;
 }
 
-
-fs-datetime .dialog.has-time.has-date .wrap
+fs-datetime.has-time.has-date .dialog .wrap
  {
     width: 800px;
 }
@@ -51,18 +72,11 @@ fs-datetime .dialog .date::-webkit-scrollbar {
     display: none;
 }
 
-fs-datetime .dialog {
-	position: absolute;
-    z-index: 51;
-    display: table;
-    width: 371px;
-    top: 35px;
-}
-
 fs-datetime .dialog .month-year {
 	height: 55px;
 	font-size: 17px;
-	padding-left: 15px
+	padding-left: 15px;
+	border: 1px solid #efefef;
 }
 
 fs-datetime .dialog .year,
@@ -86,21 +100,17 @@ fs-datetime .dialog .month-year .md-select-value {
 	padding: 0;
 }
 
-
-fs-datetime .dialog .month:hover .md-select-value .md-select-icon,
-fs-datetime .dialog .year:hover .md-select-value .md-select-icon {
+fs-datetime .dialog .month-year:hover .md-select-value .md-select-icon {
 	visibility: visible;
 }
 
-fs-datetime .dialog .month:hover .md-select-value,
-fs-datetime .dialog .year:hover .md-select-value {
+fs-datetime .dialog .month-year:hover .md-select-value {
 	border-color: #e1e1e1;
 }
 
-
-
 fs-datetime .dialog table {
 	border-collapse: collapse;
+	margin-right: 1px;
 }
 
 fs-datetime .dialog .day {
@@ -155,12 +165,9 @@ fs-datetime .dialog thead th {
 
 fs-datetime .dialog .date
  {
-    height: 100%;
-   	overflow-y: auto;
+    overflow-y: auto;
     overflow-x: hidden;
 }
-
-
 
 fs-datetime .dialog .time {
     margin: auto;

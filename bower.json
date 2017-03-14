@@ -1,10 +1,13 @@
 {
-  "name": "fs-angular", 
+  "name": "fs-angular-datetime",
   "description": "",
   "main": [
-    "dist/.js",
-    "dist/.css"
+    "dist/datetime.js",
+    "dist/datetime.css"
   ],
+  "dependencies": {
+    "moment": "2.10.6"
+  },
   "authors": [
     "Firestitch Inc."
   ],

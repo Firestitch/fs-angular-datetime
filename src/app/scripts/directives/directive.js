@@ -18,8 +18,7 @@
             		$scope.hasDate = true;
             	}
 
-            	$scope.open = 0;
-            	$scope.monthView = null;
+            	$scope.open = false;
             	$scope.monthList = [{ value: 1, name: 'January' },
             						{ value: 2, name: 'February' },
             						{ value: 3, name: 'March' },
@@ -48,9 +47,68 @@
             	$scope.inputBlur = function(e) {
             		setDate($scope.model);
             		if(!parentDialog(e.relatedTarget)) {
-            			$scope.open = false;
+            			$scope.close();
             		}
             	}
+
+     			$scope.inputFocus = function() {
+            		$scope.open = true;
+           			showMonth($scope.model);
+            	}
+
+            	$scope.inputKeyup = function(e) {
+            		if(e.keyCode == 13) {
+            			$scope.inputBlur(e);
+            		}
+            	}
+
+            	$scope.inputClick = function(e) {
+
+            		var input = e.target;
+            		var pos = null;
+            		if ('selectionStart' in input) {
+			            // Standard-compliant browsers
+			            pos = input.selectionStart;
+			        } else if (document.selection) {
+			            // IE
+			            input.focus();
+			            var sel = document.selection.createRange();
+			            var selLen = document.selection.createRange().text.length;
+			            sel.moveStart('character', - input.value.length);
+			            pos = sel.text.length - selLen;
+			        }
+
+			        var s1 = input.value.substring(0,pos);
+			        var s2 = input.value.substring(pos);
+
+			        s1 = s1.match(/[a-z0-9]+$/i);
+			        s2 = s2.match(/^[a-z0-9]+/i);
+
+			        if(s1 && s2) {
+
+	            		var start = pos - s1[0].length;
+	            		var end = pos + s2[0].length;
+
+						if( input.createTextRange ) {
+						  var selRange = input.createTextRange();
+						  selRange.collapse(true);
+						  selRange.moveStart('character', start);
+						  selRange.moveEnd('character', end);
+						  selRange.select();
+						  input.focus();
+						} else if( input.setSelectionRange ) {
+						  input.focus();
+						  input.setSelectionRange(start, end);
+						} else if( typeof input.selectionStart != 'undefined' ) {
+						  input.selectionStart = start;
+						  input.selectionEnd = end;
+						  input.focus();
+						}
+					}
+
+					$scope.open = true;
+           			showMonth($scope.model);
+        		}
 
             	function parentDialog(el) {
             		if(el) {
@@ -102,12 +160,6 @@
 							years: [moment.format("YYYY")] }
             	}
 
-            	$scope.inputFocus = function() {
-            		$scope.open = true;
-
-           			showMonth($scope.model);
-            	}
-
             	$scope.monthClick = function(month) {
             		angular.extend(month.months,$scope.monthList);
             	}
@@ -132,7 +184,6 @@
 
 	               		if(selected) {
 	               			service.$date.scrollTop = selected.offsetTop - 52;
-	               			$scope.monthView = moment.format('M');
 	               		}
 	               	});
             	}
@@ -197,7 +248,11 @@
             				.month(month - 1)
             				.date(day);
             		setDate($scope.model);
-            		$scope.open = false;
+            		$scope.close();
+            	}
+
+            	$scope.close = function() {
+					$scope.open = false;
             	}
 
             	$scope.yearSelect = function(year) {
@@ -237,45 +292,93 @@
 
             	return service;
             },
-            link: function($scope, element, attrs, ctrl) {
+            link: function($scope, $el, attrs, ctrl) {
 
-			   	if($scope.hasTime) {
-               		element.addClass("has-time");
-               	}
+            	$scope.$watchGroup(['hasTime','hasDate'],function(value) {
+            		value[0] ? $el.addClass("has-time") : $el.removeClass("has-time");
+            		value[1] ? $el.addClass("has-date") : $el.removeClass("has-date");
+            	});
 
                	if(!$scope.model) {
                		$scope.model = moment();
                	}
 
-               	setTimeout(function() {
+               	var el = $el[0];
 
+               	setTimeout(function() {
 	               	$http.get('views/directives/datetimedialog.html', {
 	                    cache: $templateCache
 	                }).then(function(response) {
-	                    element.append(response.data);
-	                    $compile(angular.element(element[0].querySelector('.dialog')))($scope);
+	                    $el.append(response.data);
+	                    $compile(angular.element(el.querySelector('.dialog')))($scope);
+
+	                    if($scope.hasTime) {
+							var clock = el.querySelector('.time .clock');
+							for (var i=1; i<=12; i++) {
+								var nmb = document.createElementNS("http://www.w3.org/2000/svg","text");
+							  	var ang = 90 - 30 * i,
+							  		nx = 48 + 38 * Math.cos(ang*Math.PI/180),
+							  		ny = 52 - 38 * Math.sin(ang*Math.PI/180);
+							 	nmb.setAttributeNS(null,"x",nx);
+							  	nmb.setAttributeNS(null,"y",ny);
+							 	nmb.setAttributeNS(null,"font-size","8");
+								nmb.appendChild(document.createTextNode(i));
+								clock.appendChild(nmb);
+							}
+
+							var movingElem = null;
+							function mouseDown(e) {
+								movingElem = e.target;
+							}
+
+							function mouseUp(e) {
+								movingElem = null;
+							}
+
+							function mouseMove(e) {
+							  	if (movingElem) {
+								    // get mouse coords in the svg coordinate system and
+								    // calculate angle in relation to the mid-point (50, 50)
+								    // more info: https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
+									var vwp = movingElem.nearestViewportElement,
+										ctm = vwp.getScreenCTM(),
+								        pnt = vwp.createSVGPoint();
+										pnt.x = e.clientX;
+										pnt.y = e.clientY;
+								    var loc = pnt.matrixTransform(ctm.inverse());
+										var deg = 90 - Math.atan2(50 - loc.y, loc.x - 50) * 180 / Math.PI;
+										movingElem.setAttribute('transform', 'rotate(' + deg + ' 50 50)');
+							  	}
+							}
+							var min = el.querySelector('.time .hands .min');
+							var hour = el.querySelector('.time .hands .hour');
+							min.addEventListener('mousedown', mouseDown, false);
+							hour.addEventListener('mousedown', mouseDown, false);
+							document.addEventListener('mouseup', mouseUp, false);
+							document.addEventListener('mousemove', mouseMove, false);
+						}
+
 	                    ctrl.drawMonths($scope.model);
 	                    var padding = 400;
-	                    var timeout = null;
-	               		ctrl.$date = element[0].querySelector('.date');
+	                    //var timeout = null;
+	               		ctrl.$date = el.querySelector('.date');
 	               		angular.element(ctrl.$date).on('scroll',function(e) {
 	               			if(e.target.scrollTop<padding) {
 	               				ctrl.appendBottom();
-	               				clearTimeout(timeout);
-	               				timeout = setTimeout(calendarEnable,100);
+	               				//clearTimeout(timeout);
+	               				//timeout = setTimeout(calendarEnable,100);
 	               			} else if((e.target.scrollHeight)<(e.target.scrollTop + e.target.offsetHeight + padding)) {
 	               				ctrl.appendTop();
-	               				clearTimeout(timeout);
-	               				timeout = setTimeout(calendarEnable,100);
+	               				//clearTimeout(timeout);
+	               				//timeout = setTimeout(calendarEnable,100);
 	               			}
 	               		});
 	                });
 	            });
 
-               	function calendarEnable() {
+               	/*function calendarEnable() {
                		//debugger;
-               	}
-
+               	}*/
 
                	if($scope.model) {
                		ctrl.setDate($scope.model);
@@ -284,83 +387,6 @@
                 $scope.$on('$destroy',function() {
 					ctrl.$date.off('scroll');
 				});
-
-				$timeout(function () {
-
-
-/*
-
-				var clock = document.getElementById('clock');
-				for (var i=1; i<=12; i++) {
-					var nmb = document.createElementNS("http://www.w3.org/2000/svg","text");
-				  var ang = 90 - 30 * i,
-				  		nx = 48 + 38 * Math.cos(ang*Math.PI/180),
-				  		ny = 52 - 38 * Math.sin(ang*Math.PI/180);
-				  nmb.setAttributeNS(null,"x",nx);
-				  nmb.setAttributeNS(null,"y",ny);
-
-				  //debugger;
-				  nmb.setAttributeNS(null,"font-size","8");
-					nmb.appendChild(document.createTextNode(i));
-					clock.appendChild(nmb);
-				}
-
-				var movingElem = null;
-				function mouseDown(e) {
-					movingElem = e.target;
-				}
-				function mouseUp(e) {
-					movingElem = null;
-				}
-				function mouseMove(e) {
-				  if (movingElem) {
-				    // get mouse coords in the svg coordinate system and
-				    // calculate angle in relation to the mid-point (50, 50)
-				    // more info: https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
-					  var vwp = movingElem.nearestViewportElement,
-						    ctm = vwp.getScreenCTM(),
-				        pnt = vwp.createSVGPoint();
-						  pnt.x = e.clientX;
-							pnt.y = e.clientY;
-				    var loc = pnt.matrixTransform(ctm.inverse());
-						var deg = 90 - Math.atan2(50 - loc.y, loc.x - 50) * 180 / Math.PI;
-						movingElem.setAttribute('transform', 'rotate(' + deg + ' 50 50)');
-				  }
-				}
-
-				min.addEventListener('mousedown', mouseDown, false);
-				hour.addEventListener('mousedown', mouseDown, false);
-				document.addEventListener('mouseup', mouseUp, false);
-				document.addEventListener('mousemove', mouseMove, false);
-
-
-
-*/
-
-				});
-
-
-	            function throttle(func, wait) {
-				    var context, args, timeout, throttling, more, result;
-				    var whenDone = _.debounce(function(){ more = throttling = false; }, wait);
-				    return function() {
-				      context = this; args = arguments;
-				      var later = function() {
-				        timeout = null;
-				        if (more) func.apply(context, args);
-				        whenDone();
-				      };
-				      if (!timeout) timeout = setTimeout(later, wait);
-				      if (throttling) {
-				        more = true;
-				      } else {
-				        result = func.apply(context, args);
-				      }
-				      whenDone();
-				      throttling = true;
-				      return result;
-				    }
-				}
             }
         };
     });
