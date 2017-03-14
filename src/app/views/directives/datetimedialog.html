@@ -1,0 +1,48 @@
+<div class="dialog" ng-show="open" ng-class="{ 'has-time': hasTime, 'has-date': hasDate }">
+	<div class="wrap" layout="row">
+		<div class="date">
+			<table>
+				<thead>
+					<tr>
+						<th>Sun</th>
+						<th>Mon</th>
+						<th>Tues</th>
+						<th>Wed</th>
+						<th>Thrus</th>
+						<th>Fri</th>
+						<th>Sat</th>
+					</tr>
+				</thead>
+				<tbody class="calendar calendar-{{month.time}}" ng-repeat="month in months" data-time="{{month.time}}">
+					<tr>
+						<td colspan="7" class="month-year">
+							<div layout="row">
+								<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthSelect(month.number)">
+	                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
+	                            </md-select>
+
+	                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearSelect(month.year)">
+	                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{item}}</md-option>
+	                            </md-select>
+	                        </div>
+						</td>
+					</tr>
+					<tr class="week" ng-repeat="week in month.weeks">
+						<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute }" ng-click="daySelect(day.year,day.month,day.number)">
+							<span>{{day.number}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="time" flex="50" ng-show="hasTime">
+			<svg id="clock" viewBox="0 0 100 100">
+			    <circle id="face" cx="50" cy="50" r="48" />
+			    <g id="hands">
+			        <rect id="hour" x="48.5" y="22.5" width=".3" height="30" rx="2.5" ry="2.55" />
+			        <rect id="min" x="48.5" y="12.5" width="1" height="40" rx="2" ry="2" />
+			    </g>
+			</svg>
+		</div>
+	</div>
+</div>

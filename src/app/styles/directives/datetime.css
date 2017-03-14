@@ -1,0 +1,180 @@
+fs-datetime {
+	position: relative;
+}
+
+fs-datetime .input {
+	width: 100px;
+}
+
+fs-datetime.has-time .input {
+	width: 200px;
+}
+
+
+fs-datetime .dialog .wrap
+ {
+    background: #fff;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    width: 372px;
+    height: 400px;
+}
+
+
+fs-datetime .dialog.has-time.has-date .wrap
+ {
+    width: 800px;
+}
+
+fs-datetime .dialog .wrap:after,
+fs-datetime .dialog .wrap:before {
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #fff;
+	top: -20px;
+    content: '';
+    left: 50%;
+    position: absolute;
+    transform: rotate(180deg);
+    left: 23px;
+}
+
+fs-datetime .dialog .wrap:before {
+    border-left: 23px solid transparent;
+    border-right: 23px solid transparent;
+    border-top: 23px solid  transparent;
+    border-top-color: #efefef;
+    top: -21px;
+    left: 20px;
+}
+
+fs-datetime .dialog .date::-webkit-scrollbar {
+    display: none;
+}
+
+fs-datetime .dialog {
+	position: absolute;
+    z-index: 51;
+    display: table;
+    width: 371px;
+    top: 35px;
+}
+
+fs-datetime .dialog .month-year {
+	height: 55px;
+	font-size: 17px;
+	padding-left: 15px
+}
+
+fs-datetime .dialog .year,
+fs-datetime .dialog .month {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    margin-right: 5px;
+}
+
+fs-datetime .dialog .month-year .md-select-value .md-select-icon {
+	visibility: hidden;
+	width: 15px;
+	display: none;
+}
+
+fs-datetime .dialog .month-year .md-select-value {
+	border-color: transparent;
+	border-width: 1px;
+	min-width: auto;
+	padding: 0;
+}
+
+
+fs-datetime .dialog .month:hover .md-select-value .md-select-icon,
+fs-datetime .dialog .year:hover .md-select-value .md-select-icon {
+	visibility: visible;
+}
+
+fs-datetime .dialog .month:hover .md-select-value,
+fs-datetime .dialog .year:hover .md-select-value {
+	border-color: #e1e1e1;
+}
+
+
+
+fs-datetime .dialog table {
+	border-collapse: collapse;
+}
+
+fs-datetime .dialog .day {
+	text-align: center;
+	width: 50px;
+	height: 50px;
+	line-height: 50px;
+	border: 1px solid #efefef;
+	cursor: pointer;
+	outline: none;
+}
+
+fs-datetime .dialog .day span {
+	width: 96%;
+	height: 96%;
+	border: 1px solid transparent;
+	border-radius: 50%;
+	display: block;
+}
+
+fs-datetime .dialog .day:hover span {
+	border: 1px solid #ccc;
+	border-radius: 50%;
+}
+
+fs-datetime .dialog .day.selected span {
+	background: #4678AE;
+	border: 1px solid #4678AE;
+	color: #fff;
+}
+
+fs-datetime .dialog .day.mute {
+	background: #efefef;
+	color: #a6a5a5;
+}
+
+fs-datetime .dialog thead {
+	position: absolute;
+	top: 0;
+	z-index: 50;
+}
+
+fs-datetime .dialog thead th {
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	border: 1px solid transparent;
+	background: #fff;
+	border-bottom: 1px solid #efefef;
+}
+
+
+fs-datetime .dialog .date
+ {
+    height: 100%;
+   	overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+
+fs-datetime .dialog .time {
+    margin: auto;
+    padding: 20px;
+}
+
+#face {
+    fill : #FFF;
+    stroke: #000;
+}
+#hour, #min, #sec {
+    fill: #333;
+}
+#sec {
+    stroke: #f55;
+}
+

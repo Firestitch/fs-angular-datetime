@@ -1,0 +1,17 @@
+{
+  "name": "fs-angular-datetime",
+  "namespace": "datetime",
+  "port": "5044",
+  "moduleName": "app",
+  "version": "0.0.0",
+  "appPath": "app",
+  "dependencies": {
+    "angular": "1.6.2",
+    "angular-material": "1.1.1",
+    "angular-ui-router": "0.3.2",
+    "fs-boilerplate-styles": "^1.0.0"
+  },
+  "resolutions": {
+    "angular": "1.6.2"
+  }
+}

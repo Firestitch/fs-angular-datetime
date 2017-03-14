@@ -1,0 +1,20 @@
+//import the various styles in order of specificity
+//@import "layoutstylesheet";
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+
+body {
+	margin: 100px;
+	width: 100% !important;
+	top: 0px 	!important;
+	position: relative !important;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "fs-angular", 
+  "description": "",
+  "main": [
+    "dist/.js",
+    "dist/.css"
+  ],
+  "authors": [
+    "Firestitch Inc."
+  ],
+  "license": "MIT",
+  "ignore": [
+    "src",
+    ".gitignore"
+  ],
+  "private": false
+}
