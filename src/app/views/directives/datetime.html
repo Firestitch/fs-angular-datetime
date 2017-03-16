@@ -4,4 +4,4 @@
 		<input ng-model="input" type="text" ng-change="inputChange()" ng-click="inputClick($event)" ng-keyup="inputKeyup($event)" ng-blur="inputBlur($event)" ng-focus="inputFocus()" class="md-input input"  ng-model-options="{ debounce: 300 }"/>
 	</div>
 </md-input-container>
-<div class="backdrop ng-hide" ng-show="open" ng-click="close()"></div>
+<div class="backdrop ng-hide" ng-show="open" ng-click="close($event)"></div>

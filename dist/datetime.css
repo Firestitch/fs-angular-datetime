@@ -11,7 +11,7 @@ fs-datetime .backdrop {
     z-index: 50;
     outline: none;
     overflow:visible;
-    pointer-events:none;
+    /*pointer-events:none;*/
     background:none !important;
 }
 
@@ -19,7 +19,6 @@ fs-datetime .dialog {
 	position: absolute;
     z-index: 51;
     display: table;
-    width: 371px;
     top: 35px;
     outline: none;
     left: 0;
@@ -33,17 +32,22 @@ fs-datetime.has-time .input {
 	width: 200px;
 }
 
-fs-datetime .dialog .wrap
- {
+fs-datetime .dialog .wrap {
     background: #fff;
     box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     width: 372px;
-    height: 385px;
 }
 
-fs-datetime.has-time.has-date .dialog .wrap
- {
-    width: 800px;
+fs-datetime .dialog .date-time {
+	height: 365px;
+}
+
+fs-datetime.has-time.has-date .dialog .date-time {
+	height: 414px;
+}
+
+fs-datetime.has-time.has-date .dialog .wrap {
+    width: 645px;
 }
 
 fs-datetime .dialog .wrap:after,
@@ -73,10 +77,11 @@ fs-datetime .dialog .date::-webkit-scrollbar {
 }
 
 fs-datetime .dialog .month-year {
-	height: 55px;
+	height: 45px;
 	font-size: 17px;
 	padding-left: 15px;
 	border: 1px solid #efefef;
+	border-left: none;
 }
 
 fs-datetime .dialog .year,
@@ -123,22 +128,22 @@ fs-datetime .dialog .day {
 	outline: none;
 }
 
+fs-datetime .dialog .date tr td:first-child {
+	border-left: 1px solid transparent;
+}
+
 fs-datetime .dialog .day span {
 	width: 96%;
 	height: 96%;
-	border: 1px solid transparent;
-	border-radius: 50%;
 	display: block;
 }
 
-fs-datetime .dialog .day:hover span {
-	border: 1px solid #ccc;
-	border-radius: 50%;
+fs-datetime .dialog .day:hover {
+	background: rgba(70,120,174,.15);
 }
 
-fs-datetime .dialog .day.selected span {
+fs-datetime .dialog .day.selected {
 	background: #4678AE;
-	border: 1px solid #4678AE;
 	color: #fff;
 }
 
@@ -162,26 +167,97 @@ fs-datetime .dialog thead th {
 	border-bottom: 1px solid #efefef;
 }
 
+fs-datetime .dialog thead th,
+fs-datetime .lbl {
+	font-weight: normal;
+	font-size: 12px;
+	color: #4d4d4d;
+}
 
-fs-datetime .dialog .date
- {
+fs-datetime .dialog .date {
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 fs-datetime .dialog .time {
-    margin: auto;
-    padding: 20px;
+	padding: 12px 15px;
 }
 
-#face {
-    fill : #FFF;
-    stroke: #000;
+fs-datetime .dialog .time .hours table {
+	border-collapse: collapse;
+	width: 100%;
 }
-#hour, #min, #sec {
-    fill: #333;
+
+fs-datetime .dialog .time .hour:not(.disabled),
+fs-datetime .dialog .time .minute:not(.disabled) {
+    width: 31px;
+    height: 31px;
+    text-align: center;
+    border: 1px	solid #efefef;
+    padding: 0;
+    cursor: pointer;
 }
-#sec {
-    stroke: #f55;
+
+fs-datetime .dialog .time .hour .number,
+fs-datetime .dialog .time .minute .number {
+    /*border: 1px solid transparent;*/
+	/*border-radius: 50%;*/
+    line-height: 28px;
+    height: 28px;
+}
+
+fs-datetime .dialog .time .hour .number {
+	/*font-size: 12px;*/
+}
+
+fs-datetime .dialog .time .hour:hover:not(.disabled),
+fs-datetime .dialog .time .minute:hover:not(.disabled) {
+    background: rgba(70,120,174,.15);
+}
+
+fs-datetime .dialog .time .hour.selected:not(.disabled),
+fs-datetime .dialog .time .minute.selected:not(.disabled) {
+    background: #4678AE;
+    color: #fff;
+}
+
+fs-datetime .dialog .time .minutes {
+	margin-left: 15px;
+}
+
+fs-datetime .dialog .time .minutes table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+fs-datetime .dialog .time .minute.disabled {
+    background: #efefef;
+}
+
+fs-datetime .dialog .time .lbl {
+    margin-bottom: 3px;
+}
+
+fs-datetime .dialog .time .midnight {
+    line-height: 8px;
+    display: block;
+}
+
+fs-datetime .dialog .time .midnight div {
+    line-height: 16px;
+}
+
+fs-datetime .dialog .time .midnight,
+fs-datetime .dialog .time .noon {
+	font-size: 10px;
+}
+
+fs-datetime .dialog .time .hour .am-pm {
+	font-size: 9px;
+    margin-left: 1px;
+}
+
+fs-datetime .dialog .time .hour .number.textual {
+	font-size: 11px;
 }
 

@@ -31,6 +31,26 @@
             						{ value: 10, name: 'October' },
             						{ value: 11, name: 'November' },
             						{ value: 12, name: 'December' }];
+            	$scope.timeHours = [[0,1,2,3,4,5,6,7,8,9,10,11],[12,13,14,15,16,17,18,19,20,21,22,23]];
+            	$scope.timeHours = [[0,12],[1,13],[2,14],[3,15],[4,16],[5,17],[6,18],[7,19],[8,20],[9,21],[10,22],[11,23]];
+            	$scope.timeMinutes = [	[0,1,2,3,4,5,6,7,8,9],
+            							[10,11,12,13,14,15,16,17,18,19],
+            							[20,21,22,23,24,25,26,27,28,29],
+            							[30,31,32,33,34,35,36,37,38,39],
+            							[40,41,42,43,44,45,46,47,48,49],
+            							[50,51,52,53,54,55,56,57,58,59]];
+            	$scope.timeMinutes = [	[0,1,2,3,4],
+            							[5,6,7,8,9],
+            							[10,11,12,13,14],
+            							[15,16,17,18,19],
+            							[20,21,22,23,24],
+            							[25,26,27,28,29],
+            							[30,31,32,33,34],
+            							[35,36,37,38,39],
+            							[40,41,42,43,44],
+            							[45,46,47,48,49],
+            							[50,51,52,53,54],
+            							[55,56,57,58,59]];
 
             	$scope.inputChange = function() {
             		var date = Date.parse($scope.input);
@@ -168,6 +188,16 @@
             		angular.extend(month.years,$scope.yearList);
             	}
 
+            	$scope.minuteClick = function(minute) {
+            		$scope.model.minute(minute);
+            		setDate($scope.model);
+            	}
+
+            	$scope.hourClick = function(hour) {
+            		$scope.model.hour(hour);
+            		setDate($scope.model);
+            	}
+
             	function drawMonths(moment) {
             		var depth = 6;
 	        		$scope.months = [];
@@ -205,6 +235,8 @@
             		}
 
             		$scope.selectedDate = $scope.model.format('YYYY-MM-DD');
+            		$scope.selectedHour = $scope.model.format('H');
+            		$scope.selectedMinute = $scope.model.format('m');
             	}
 
             	var appending = false;
@@ -248,10 +280,23 @@
             				.month(month - 1)
             				.date(day);
             		setDate($scope.model);
-            		$scope.close();
+
+            		if(!$scope.hasTime) {
+            			$scope.close();
+            		}
             	}
 
-            	$scope.close = function() {
+
+            	$scope.close = function(e) {
+/*
+            		var s = document.querySelectorAll( ":hover" );
+
+            		debugger;
+
+            		if(e) {
+            			debugger;
+            		}
+*/
 					$scope.open = false;
             	}
 
@@ -312,7 +357,7 @@
 	                    $el.append(response.data);
 	                    $compile(angular.element(el.querySelector('.dialog')))($scope);
 
-	                    if($scope.hasTime) {
+	                    /*if($scope.hasTime) {
 							var clock = el.querySelector('.time .clock');
 							for (var i=1; i<=12; i++) {
 								var nmb = document.createElementNS("http://www.w3.org/2000/svg","text");
@@ -356,7 +401,7 @@
 							hour.addEventListener('mousedown', mouseDown, false);
 							document.addEventListener('mouseup', mouseUp, false);
 							document.addEventListener('mousemove', mouseMove, false);
-						}
+						}*/
 
 	                    ctrl.drawMonths($scope.model);
 	                    var padding = 400;

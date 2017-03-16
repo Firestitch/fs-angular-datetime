@@ -1,48 +1,77 @@
 <div class="dialog" ng-show="open" tabindex="0">
-	<div class="wrap" layout="row">
-		<div class="date">
-			<table>
-				<thead>
-					<tr>
-						<th>Sun</th>
-						<th>Mon</th>
-						<th>Tues</th>
-						<th>Wed</th>
-						<th>Thrus</th>
-						<th>Fri</th>
-						<th>Sat</th>
-					</tr>
-				</thead>
-				<tbody class="calendar calendar-{{month.time}}" ng-repeat="month in months" data-time="{{month.time}}">
-					<tr>
-						<td colspan="7" class="month-year">
-							<div layout="row">
-								<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthSelect(month.number)">
-	                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
-	                            </md-select>
+	<div class="wrap">
+		<div layout="row" class="date-time">
+			<div class="date">
+				<table>
+					<thead>
+						<tr>
+							<th>Sun</th>
+							<th>Mon</th>
+							<th>Tues</th>
+							<th>Wed</th>
+							<th>Thurs</th>
+							<th>Fri</th>
+							<th>Sat</th>
+						</tr>
+					</thead>
+					<tbody class="calendar calendar-{{month.time}}" ng-repeat="month in months" data-time="{{month.time}}">
+						<tr>
+							<td colspan="7" class="month-year">
+								<div layout="row">
+									<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthSelect(month.number)">
+		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
+		                            </md-select>
 
-	                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearSelect(month.year)">
-	                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{item}}</md-option>
-	                            </md-select>
-	                        </div>
-						</td>
-					</tr>
-					<tr class="week" ng-repeat="week in month.weeks">
-						<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute }" ng-click="daySelect(day.year,day.month,day.number)">
-							<span>{{day.number}}</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearSelect(month.year)">
+		                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{item}}</md-option>
+		                            </md-select>
+		                        </div>
+							</td>
+						</tr>
+						<tr class="week" ng-repeat="week in month.weeks">
+							<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute }" ng-click="daySelect(day.year,day.month,day.number)">
+								<span>{{day.number}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="time" ng-show="hasTime">
+
+				<div layout="row" layout-align="start start">
+					<div class="hours">
+						<div class="lbl">Hour</div>
+						<table>
+							<tr ng-repeat="hours in timeHours">
+								<td ng-repeat="hour in hours" class="hour" ng-click="hourClick(hour)" ng-class="{ selected: hour==selectedHour }">
+
+									<div class="number">
+										<span ng-if="hour<12">{{hour}}<span class="am-pm">am</span></span>
+										<span ng-if="hour==12">12<span class="am-pm">pm</span></span>
+										<span ng-if="hour>12">{{hour-12}}<span class="am-pm">pm</span></span>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="minutes">
+						<div class="lbl">Minute</div>
+						<table>
+							<tr ng-repeat="minutes in timeMinutes">
+								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disableds: !minute, selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
+									<div class="number">
+										{{minute}}
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="time" flex="50" ng-show="hasTime">
-			<svg class="clock" viewBox="0 0 100 100">
-			    <circle id="face" cx="50" cy="50" r="48" />
-			    <g class="hands">
-			        <rect class="hour" x="48.5" y="22.5" width=".3" height="30" rx="2.5" ry="2.55" />
-			        <rect class="min" x="48.5" y="12.5" width="1" height="40" rx="2" ry="2" />
-			    </g>
-			</svg>
+		<div layout="row" layout-align="end start" ng-show="hasTime">
+			<md-button class="md-accent" ng-click="close($event)">Done</md-button>
 		</div>
 	</div>
 </div>
