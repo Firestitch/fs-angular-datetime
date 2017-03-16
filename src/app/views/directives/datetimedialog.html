@@ -47,9 +47,8 @@
 								<td ng-repeat="hour in hours" class="hour" ng-click="hourClick(hour)" ng-class="{ selected: hour==selectedHour }">
 
 									<div class="number">
-										<span ng-if="hour<12">{{hour}}<span class="am-pm">am</span></span>
-										<span ng-if="hour==12">12<span class="am-pm">pm</span></span>
-										<span ng-if="hour>12">{{hour-12}}<span class="am-pm">pm</span></span>
+										<span ng-if="hour<12">{{hour ? hour : 12}}<span class="am-pm">am</span></span>
+										<span ng-if="hour>=12">{{hour==12 ? 12 : hour-12}}<span class="am-pm">pm</span></span>
 									</div>
 								</td>
 							</tr>
