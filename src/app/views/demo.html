@@ -1,7 +1,9 @@
 <div layout="row">
 	<div flex="50">
-		<fs-datetime fs-model="model" fs-label="Date" fs-time="false"></fs-datetime>
-		<fs-datetime fs-model="model" fs-label="Date/Time" fs-time="true"></fs-datetime>
+		<fs-datetime fs-model="model1" fs-label="Date" fs-time="false"></fs-datetime>
+		<fs-datetime fs-model="model2" fs-label="Date/Time" fs-time="true"></fs-datetime>
+		<fs-datetime fs-model="model3" fs-label="Date/Time" fs-time="true" fs-default-time="9:00"></fs-datetime>
+		<fs-datetime fs-model="model4" fs-label="Time" fs-time="true" fs-date="false"></fs-datetime>
 	</div>
 	<div>
 		<h3>Date: {{model}}</h3>

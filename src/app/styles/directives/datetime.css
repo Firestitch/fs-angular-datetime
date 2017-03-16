@@ -11,7 +11,7 @@ fs-datetime .backdrop {
     z-index: 50;
     outline: none;
     overflow:visible;
-    /*pointer-events:none;*/
+    pointer-events:none;
     background:none !important;
 }
 
@@ -28,6 +28,10 @@ fs-datetime .input {
 	width: 100px;
 }
 
+fs-datetime.has-time:not(.has-date) .input {
+	width: 70px;
+}
+
 fs-datetime.has-time .input {
 	width: 200px;
 }
@@ -42,7 +46,8 @@ fs-datetime .dialog .date-time {
 	height: 365px;
 }
 
-fs-datetime.has-time.has-date .dialog .date-time {
+fs-datetime.has-time.has-date .dialog .date-time,
+fs-datetime.has-time:not(.has-date) .dialog .date-time {
 	height: 414px;
 }
 
@@ -50,12 +55,16 @@ fs-datetime.has-time.has-date .dialog .wrap {
     width: 645px;
 }
 
+fs-datetime.has-time:not(.has-date) .dialog .wrap {
+     width: auto;
+}
+
 fs-datetime .dialog .wrap:after,
 fs-datetime .dialog .wrap:before {
-    border-left: 20px solid transparent;
+	border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-top: 20px solid #fff;
-	top: -20px;
+    border-top: 19px solid #fff;
+    top: -19px;
     content: '';
     left: 50%;
     position: absolute;
@@ -66,7 +75,7 @@ fs-datetime .dialog .wrap:before {
 fs-datetime .dialog .wrap:before {
     border-left: 23px solid transparent;
     border-right: 23px solid transparent;
-    border-top: 23px solid  transparent;
+    border-top: 21px solid transparent;
     border-top-color: #efefef;
     top: -21px;
     left: 20px;
