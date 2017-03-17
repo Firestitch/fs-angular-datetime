@@ -11,7 +11,7 @@ fs-datetime .backdrop {
     z-index: 50;
     outline: none;
     overflow:visible;
-    pointer-events:none;
+    /*pointer-events:none;*/
     background:none !important;
 }
 
@@ -19,21 +19,24 @@ fs-datetime .dialog {
 	position: absolute;
     z-index: 51;
     display: table;
-    top: 35px;
     outline: none;
     left: 0;
 }
 
-fs-datetime .input {
-	width: 100px;
+fs-datetime .md-input {
+	min-width: 100px;
 }
 
-fs-datetime.has-time:not(.has-date) .input {
-	width: 70px;
+fs-datetime.has-time .md-input {
+	min-width: 150px;
 }
 
-fs-datetime.has-time .input {
-	width: 200px;
+fs-datetime.has-time:not(.has-date) .md-input {
+	min-width: 70px;
+}
+
+fs-datetime.has-time .md-input {
+	width: auto;
 }
 
 fs-datetime .dialog .wrap {
@@ -157,8 +160,13 @@ fs-datetime .dialog .day.selected {
 }
 
 fs-datetime .dialog .day.mute {
-	background: #efefef;
+	color: #d7d7d7;
+}
+
+fs-datetime .dialog .day.disabled {
 	color: #a6a5a5;
+	cursor: initial;
+	background: #efefef;
 }
 
 fs-datetime .dialog thead {
@@ -270,3 +278,10 @@ fs-datetime .dialog .time .hour .number.textual {
 	font-size: 11px;
 }
 
+fs-datetime .dialog . {
+	font-size: 11px;
+}
+
+fs-datetime-range .to {
+	padding: 26px 7px;
+}

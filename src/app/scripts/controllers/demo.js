@@ -6,7 +6,8 @@
 
 
     $scope.text = '';
-    
+    $scope.disabled = [ [moment(),moment().add('day',7)] ];
+
     $scope.submit = function() {
         alert('submit');
     }

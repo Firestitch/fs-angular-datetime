@@ -1,4 +1,4 @@
-<div class="dialog" ng-show="open" tabindex="0">
+<div class="dialog" ng-show="opened" tabindex="0">
 	<div class="wrap">
 		<div layout="row" class="date-time">
 			<div class="date" ng-show="hasDate">
@@ -18,18 +18,18 @@
 						<tr>
 							<td colspan="7" class="month-year">
 								<div layout="row">
-									<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthSelect(month.number)">
+									<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthChange(month.number)">
 		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
 		                            </md-select>
 
-		                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearSelect(month.year)">
+		                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearChange(month.year)">
 		                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{item}}</md-option>
 		                            </md-select>
 		                        </div>
 							</td>
 						</tr>
 						<tr class="week" ng-repeat="week in month.weeks">
-							<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute }" ng-click="daySelect(day.year,day.month,day.number)">
+							<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }" ng-click="dayClick(day)">
 								<span>{{day.number}}</span>
 							</td>
 						</tr>
@@ -45,7 +45,6 @@
 						<table>
 							<tr ng-repeat="hours in timeHours">
 								<td ng-repeat="hour in hours" class="hour" ng-click="hourClick(hour)" ng-class="{ selected: hour==selectedHour }">
-
 									<div class="number">
 										<span ng-if="hour<12">{{hour ? hour : 12}}<span class="am-pm">am</span></span>
 										<span ng-if="hour>=12">{{hour==12 ? 12 : hour-12}}<span class="am-pm">pm</span></span>
@@ -58,7 +57,7 @@
 						<div class="lbl">Minute</div>
 						<table>
 							<tr ng-repeat="minutes in timeMinutes">
-								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disableds: !minute, selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
+								<td ng-repeat="minute in minutes" class="minute" ng-class="{ selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
 									<div class="number">
 										{{minute}}
 									</div>

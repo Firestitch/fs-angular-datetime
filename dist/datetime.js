@@ -2196,7 +2196,10 @@ Date.CultureInfo = {
                label: '@?fsLabel',
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
-               defaultTime: '@fsDefaultTime'
+               defaultTime: '@fsDefaultTime',
+               hasRange: '=?fsRange',
+               disabled: '=?fsDisabled',
+               dateSelect: '@fsDateSelect'
             },
             controller: function($scope) {
 
@@ -2204,7 +2207,8 @@ Date.CultureInfo = {
             		$scope.hasDate = true;
             	}
 
-            	$scope.open = false;
+            	$scope.opened = false;
+            	$scope.input = '';
             	$scope.monthList = [{ value: 1, name: 'January' },
             						{ value: 2, name: 'February' },
             						{ value: 3, name: 'March' },
@@ -2231,7 +2235,19 @@ Date.CultureInfo = {
             							[50,51,52,53,54],
             							[55,56,57,58,59]];
 
-            	$scope.inputChange = function() {
+            	$scope.$watch('disabled',function(disabled) {
+            		if(disabled!==undefined) {
+            			angular.forEach($scope.months,function(month) {
+            				angular.forEach(month.weeks,function(week) {
+            					angular.forEach(week,function(day) {
+									day.disabled = isDayDisabled(moment(day.date));
+            					});
+            				});
+            			});
+            		}
+            	});
+
+            	$scope.inputChange = function(type) {
             		var date = Date.parse($scope.input);
             		if(date) {
             			$scope.model = moment(date);
@@ -2255,6 +2271,12 @@ Date.CultureInfo = {
             		}
             	}
 
+            	function createModel() {
+            		if(!$scope.model) {
+            			$scope.model = moment();
+            		}
+            	}
+
             	$scope.inputBlur = function(e) {
             		setDate($scope.model);
             		if(!parentDialog(e.relatedTarget)) {
@@ -2263,7 +2285,7 @@ Date.CultureInfo = {
             	}
 
      			$scope.inputFocus = function() {
-            		$scope.open = true;
+            		$scope.open();
            			showMonth($scope.model);
             	}
 
@@ -2273,12 +2295,17 @@ Date.CultureInfo = {
             		}
             	}
 
+            	$scope.open = function() {
+            		$scope.opened = true;
+            		drawMonths($scope.model);
+            		showMonth($scope.model);
+            	}
+
             	$scope.inputClick = function(e) {
 
             		var input = e.target;
             		var pos = null;
             		if ('selectionStart' in input) {
-			            // Standard-compliant browsers
 			            pos = input.selectionStart;
 			        } else if (document.selection) {
 			            // IE
@@ -2301,24 +2328,21 @@ Date.CultureInfo = {
 	            		var end = pos + s2[0].length;
 
 						if( input.createTextRange ) {
-						  var selRange = input.createTextRange();
-						  selRange.collapse(true);
-						  selRange.moveStart('character', start);
-						  selRange.moveEnd('character', end);
-						  selRange.select();
-						  input.focus();
+							var selRange = input.createTextRange();
+							selRange.collapse(true);
+							selRange.moveStart('character', start);
+							selRange.moveEnd('character', end);
+							selRange.select();
+							input.focus();
 						} else if( input.setSelectionRange ) {
-						  input.focus();
-						  input.setSelectionRange(start, end);
+							input.focus();
+							input.setSelectionRange(start, end);
 						} else if( typeof input.selectionStart != 'undefined' ) {
-						  input.selectionStart = start;
-						  input.selectionEnd = end;
-						  input.focus();
+							input.selectionStart = start;
+							input.selectionEnd = end;
+							input.focus();
 						}
 					}
-
-					$scope.open = true;
-           			showMonth($scope.model);
         		}
 
             	function parentDialog(el) {
@@ -2333,17 +2357,39 @@ Date.CultureInfo = {
             		return false;
             	}
 
-            	function createMonth(moment) {
-            		var moment = moment.clone().date(1);
+            	function isDayDisabled(md) {
+            		if(!$scope.disabled) {
+            			return false;
+            		}
+
+            		var len;
+    				for(var i=0, len = $scope.disabled.length; i < len; i++) {
+    					var value = $scope.disabled[i];
+    					if(moment.isMoment(value)) {
+    						if(value.format('YYYY-MM-DD')==md.format('YYYY-MM-DD')) {
+    							return true;
+    						}
+    					} else {
+    						if(md.isBetween(value[0].startOf('day'),value[1].startOf('day')) || md.format('YYYY-MM-DD')==value[0].format('YYYY-MM-DD')) {
+    							return true;
+    						}
+    					}
+    				}
+
+    				return false;
+            	}
+
+            	function createMonth(date) {
+            		var date = date.clone().date(1);
 
         			var days = [], weeks = [];
         			var week = [];
-        			var md = moment.clone();
+        			var md = date.clone();
 
-        			md.subtract(moment.day(),'day');
-        			var daysInMonth = moment.daysInMonth();
+        			md.subtract(date.day(),'day');
+        			var daysInMonth = date.daysInMonth();
 
-        			for(var d=0;d<daysInMonth + moment.day() + (6 - moment.clone().add(1,'month').day() + 1);d++) {
+        			for(var d=0;d<daysInMonth + date.day() + (6 - date.clone().add(1,'month').day() + 1);d++) {
         				var number = md.format('DD');
         				days.push({ number: number });
 
@@ -2352,23 +2398,24 @@ Date.CultureInfo = {
         					weeks.push(week);
         				}
 
-        				week.push({ mute: (d - moment.day()<0 || ((d - moment.day() + 1) > daysInMonth)),
+        				week.push({ mute: (d - date.day()<0 || ((d - date.day() + 1) > daysInMonth)),
 									date: md.format('YYYY-MM-DD'),
 									number: md.format('D'),
         							month: md.format('M'),
-									year: md.format('YYYY') });
+									year: md.format('YYYY'),
+									disabled: isDayDisabled(md) });
 
         				md.add(1,'day');
         			}
 
-            		return {name: moment.format('MMMM'),
-							number: moment.format("M"),
-							year: moment.format("YYYY"),
-							time: moment.format("x"),
-							moment: moment,
+            		return {name: date.format('MMMM'),
+							number: date.format("M"),
+							year: date.format("YYYY"),
+							time: date.format("x"),
+							moment: date,
 							weeks: weeks,
-							months: [{ name: moment.format('MMMM'), value: moment.format('M')}],
-							years: [moment.format("YYYY")] }
+							months: [{ name: date.format('MMMM'), value: date.format('M')}],
+							years: [date.format("YYYY")] }
             	}
 
             	$scope.monthClick = function(month) {
@@ -2379,29 +2426,21 @@ Date.CultureInfo = {
             		angular.extend(month.years,$scope.yearList);
             	}
 
-            	$scope.minuteClick = function(minute) {
-            		$scope.model.minute(minute);
-            		setDate($scope.model);
-            	}
-
-            	$scope.hourClick = function(hour) {
-            		$scope.model.hour(hour);
-            		setDate($scope.model);
-            	}
-
-            	function drawMonths(moment) {
+            	function drawMonths(date) {
+            		var date = date ? date : moment();
             		var depth = 6;
 	        		$scope.months = [];
-	        		var m = moment.clone().startOf('month').subtract(depth/2,'months');
+	        		var m = date.clone().startOf('month').subtract(depth/2,'months');
 	        		for(var i=0;i<=depth;i++) {
 	        			$scope.months.push(createMonth(m));
 	        			m.add(1,'month');
 	        		}
 	        	}
 
-	        	function showMonth(moment) {
+	        	function showMonth(date) {
 	        		setTimeout(function() {
-	               		var selected = service.$date.querySelector('.calendar-' + moment.clone().startOf('month').format('x'));
+	        			var date = date ? date : moment();
+	               		var selected = service.$date.querySelector('.calendar-' + date.clone().startOf('month').format('x'));
 
 	               		if(selected) {
 	               			service.$date.scrollTop = selected.offsetTop - 52;
@@ -2427,13 +2466,17 @@ Date.CultureInfo = {
             			format.push('h:mm a')
             		}
 
-            		if(options.inputUpdate===undefined) {
-            			$scope.input = $scope.model.format(format.join(' '));
-            		}
+            		if($scope.model) {
+	            		if(options.inputUpdate===undefined) {
+	            			$scope.input = $scope.model.format(format.join(' '));
+	            		}
 
-            		$scope.selectedDate = $scope.model.format('YYYY-MM-DD');
-            		$scope.selectedHour = $scope.model.format('H');
-            		$scope.selectedMinute = $scope.model.format('m');
+	            		$scope.selectedDate = $scope.model.format('YYYY-MM-DD');
+	            		$scope.selectedHour = $scope.model.format('H');
+	            		$scope.selectedMinute = $scope.model.format('m');
+	            	}
+
+            		$scope.inputLength = $scope.input.length;
             	}
 
             	var appending = false;
@@ -2471,19 +2514,6 @@ Date.CultureInfo = {
             		append(1);
             	}
 
-            	$scope.daySelect = function(year,month,day) {
-            		$scope.model
-            				.year(year)
-            				.month(month - 1)
-            				.date(day);
-            		setDate($scope.model);
-
-            		if(!$scope.hasTime) {
-            			$scope.close();
-            		}
-            	}
-
-
             	$scope.close = function(e) {
 /*
             		var s = document.querySelectorAll( ":hover" );
@@ -2494,22 +2524,87 @@ Date.CultureInfo = {
             			debugger;
             		}
 */
-					$scope.open = false;
+					$scope.opened = false;
             	}
 
-            	$scope.yearSelect = function(year) {
+            	$scope.dayClick = function(day) {
+
+            		if(day.disabled) {
+            			return;
+            		}
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
             		$scope.model
-            				.year(year);
+            				.year(day.year)
+            				.month(day.month - 1)
+            				.date(day.number);
+
+            		setDate($scope.model);
+
+            		if($scope.dateSelect) {
+            			$timeout(function() {
+            				$scope.$parent.$eval($scope.dateSelect);
+            			});
+            		}
+
+            		if(!$scope.hasTime) {
+            			$scope.close();
+            		}
+            	}
+
+            	$scope.yearChange = function(year) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.year(year);
             		setDate($scope.model);
             		drawMonths($scope.model);
             		showMonth($scope.model);
+
+            		if($scope.dateSelect) {
+            			$scope.$parent.$eval($scope.dateSelect);
+            		}
             	}
 
-            	$scope.monthSelect = function(month) {
+            	$scope.monthChange = function(month) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
             		$scope.model.month(month - 1);
             		setDate($scope.model);
             		drawMonths($scope.model);
             		showMonth($scope.model);
+
+            		if($scope.dateSelect) {
+            			$scope.$parent.$eval($scope.dateSelect);
+            		}
+            	}
+
+            	$scope.minuteClick = function(minute) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.minute(minute);
+            		setDate($scope.model);
+            	}
+
+            	$scope.hourClick = function(hour) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.hour(hour);
+            		setDate($scope.model);
             	}
 
             	$scope.$watch('model',function(moment) {
@@ -2541,10 +2636,6 @@ Date.CultureInfo = {
             		value[1] ? $el.addClass("has-date") : $el.removeClass("has-date");
             	});
 
-               	if(!$scope.model) {
-               		$scope.model = moment();
-               	}
-
                	var el = $el[0];
 
                	setTimeout(function() {
@@ -2554,73 +2645,19 @@ Date.CultureInfo = {
 	                    $el.append(response.data);
 	                    $compile(angular.element(el.querySelector('.dialog')))($scope);
 
-	                    /*if($scope.hasTime) {
-							var clock = el.querySelector('.time .clock');
-							for (var i=1; i<=12; i++) {
-								var nmb = document.createElementNS("http://www.w3.org/2000/svg","text");
-							  	var ang = 90 - 30 * i,
-							  		nx = 48 + 38 * Math.cos(ang*Math.PI/180),
-							  		ny = 52 - 38 * Math.sin(ang*Math.PI/180);
-							 	nmb.setAttributeNS(null,"x",nx);
-							  	nmb.setAttributeNS(null,"y",ny);
-							 	nmb.setAttributeNS(null,"font-size","8");
-								nmb.appendChild(document.createTextNode(i));
-								clock.appendChild(nmb);
-							}
-
-							var movingElem = null;
-							function mouseDown(e) {
-								movingElem = e.target;
-							}
-
-							function mouseUp(e) {
-								movingElem = null;
-							}
-
-							function mouseMove(e) {
-							  	if (movingElem) {
-								    // get mouse coords in the svg coordinate system and
-								    // calculate angle in relation to the mid-point (50, 50)
-								    // more info: https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
-									var vwp = movingElem.nearestViewportElement,
-										ctm = vwp.getScreenCTM(),
-								        pnt = vwp.createSVGPoint();
-										pnt.x = e.clientX;
-										pnt.y = e.clientY;
-								    var loc = pnt.matrixTransform(ctm.inverse());
-										var deg = 90 - Math.atan2(50 - loc.y, loc.x - 50) * 180 / Math.PI;
-										movingElem.setAttribute('transform', 'rotate(' + deg + ' 50 50)');
-							  	}
-							}
-							var min = el.querySelector('.time .hands .min');
-							var hour = el.querySelector('.time .hands .hour');
-							min.addEventListener('mousedown', mouseDown, false);
-							hour.addEventListener('mousedown', mouseDown, false);
-							document.addEventListener('mouseup', mouseUp, false);
-							document.addEventListener('mousemove', mouseMove, false);
-						}*/
-
-	                    ctrl.drawMonths($scope.model);
+	                    var date = $scope.model ? $scope.model : moment();
 	                    var padding = 400;
-	                    //var timeout = null;
+
 	               		ctrl.$date = el.querySelector('.date');
 	               		angular.element(ctrl.$date).on('scroll',function(e) {
 	               			if(e.target.scrollTop<padding) {
 	               				ctrl.appendBottom();
-	               				//clearTimeout(timeout);
-	               				//timeout = setTimeout(calendarEnable,100);
 	               			} else if((e.target.scrollHeight)<(e.target.scrollTop + e.target.offsetHeight + padding)) {
 	               				ctrl.appendTop();
-	               				//clearTimeout(timeout);
-	               				//timeout = setTimeout(calendarEnable,100);
 	               			}
 	               		});
 	                });
 	            });
-
-               	/*function calendarEnable() {
-               		//debugger;
-               	}*/
 
                	if($scope.model) {
                		ctrl.setDate($scope.model);
@@ -2631,19 +2668,57 @@ Date.CultureInfo = {
 				});
             }
         };
+    })
+	.directive('fsDatetimeRange', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'views/directives/datetimerange.html',
+            scope: {
+               from: '=fsFrom',
+               to: '=fsTo',
+               fromLabel: '@fsFromLabel',
+               toLabel: '@fsToLabel',
+               hasTime: '=?fsTime',
+               hasDate: '=?fsDate'
+            },
+            controller: function($scope) {
+
+            	$scope.fromSelect = function() {
+            		if($scope.from) {
+            			$scope.toDisabled = [[moment().subtract(99,'year'),$scope.from.clone().add(1,'day')]];
+            		} else {
+            			$scope.toDisabled = [];
+            		}
+            	}
+
+            	$scope.toSelect = function() {
+            		if($scope.to) {
+            			$scope.fromDisabled = [[$scope.to.clone(),moment().add(99,'year')]];
+            		} else {
+            			$scope.fromDisabled = [];
+            		}
+            	}
+            }
+       	}
     });
+
 })();
 
 angular.module('fs-angular-datetime').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<md-input-container class=\"fs-datetime\" ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><div layout=\"row\" layout-align=\"start center\"><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" class=\"md-input input\" ng-model-options=\"{ debounce: 300 }\"></div></md-input-container><div class=\"backdrop ng-hide\" ng-show=\"open\" ng-click=\"close($event)\"></div>"
+    "<div layout=\"row\" layout-align=\"start center\"><md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" aria-label=\"input\" size=\"{{inputLength || 1}}\"></md-input-container></div><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 
   $templateCache.put('views/directives/datetimedialog.html',
-    "<div class=\"dialog\" ng-show=\"open\" tabindex=\"0\"><div class=\"wrap\"><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\"><table><thead><tr><th>Sun</th><th>Mon</th><th>Tues</th><th>Wed</th><th>Thurs</th><th>Fri</th><th>Sat</th></tr></thead><tbody class=\"calendar calendar-{{month.time}}\" ng-repeat=\"month in months\" data-time=\"{{month.time}}\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><md-select ng-model=\"month.number\" ng-click=\"monthClick(month)\" class=\"month\" aria-label=\"Month\" ng-change=\"monthSelect(month.number)\"><md-option ng-repeat=\"item in month.months track by item.value\" ng-value=\"item.value\">{{item.name}}</md-option></md-select><md-select ng-model=\"month.year\" ng-click=\"yearClick(month)\" class=\"year\" aria-label=\"Year\" ng-change=\"yearSelect(month.year)\"><md-option ng-repeat=\"item in month.years track by item\" ng-value=\"item\">{{item}}</md-option></md-select></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selectedDate && !day.mute }\" ng-click=\"daySelect(day.year,day.month,day.number)\"><span>{{day.number}}</span></td></tr></tbody></table></div><div class=\"time\" ng-show=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ selected: hour==selectedHour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ disableds: !minute, selected: minute==selectedMinute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-show=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
+    "<div class=\"dialog\" ng-show=\"opened\" tabindex=\"0\"><div class=\"wrap\"><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\"><table><thead><tr><th>Sun</th><th>Mon</th><th>Tues</th><th>Wed</th><th>Thurs</th><th>Fri</th><th>Sat</th></tr></thead><tbody class=\"calendar calendar-{{month.time}}\" ng-repeat=\"month in months\" data-time=\"{{month.time}}\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><md-select ng-model=\"month.number\" ng-click=\"monthClick(month)\" class=\"month\" aria-label=\"Month\" ng-change=\"monthChange(month.number)\"><md-option ng-repeat=\"item in month.months track by item.value\" ng-value=\"item.value\">{{item.name}}</md-option></md-select><md-select ng-model=\"month.year\" ng-click=\"yearClick(month)\" class=\"year\" aria-label=\"Year\" ng-change=\"yearChange(month.year)\"><md-option ng-repeat=\"item in month.years track by item\" ng-value=\"item\">{{item}}</md-option></md-select></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }\" ng-click=\"dayClick(day)\"><span>{{day.number}}</span></td></tr></tbody></table></div><div class=\"time\" ng-show=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ selected: hour==selectedHour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ selected: minute==selectedMinute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-show=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
+  );
+
+
+  $templateCache.put('views/directives/datetimerange.html',
+    "<div layout=\"row\"><fs-datetime fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled=\"fromDisabled\" fs-date-select=\"fromSelect()\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled=\"toDisabled\" fs-date-select=\"toSelect()\"></fs-datetime></div>"
   );
 
 }]);

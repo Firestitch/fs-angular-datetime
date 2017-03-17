@@ -11,7 +11,10 @@
                label: '@?fsLabel',
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
-               defaultTime: '@fsDefaultTime'
+               defaultTime: '@fsDefaultTime',
+               hasRange: '=?fsRange',
+               disabled: '=?fsDisabled',
+               dateSelect: '@fsDateSelect'
             },
             controller: function($scope) {
 
@@ -19,7 +22,8 @@
             		$scope.hasDate = true;
             	}
 
-            	$scope.open = false;
+            	$scope.opened = false;
+            	$scope.input = '';
             	$scope.monthList = [{ value: 1, name: 'January' },
             						{ value: 2, name: 'February' },
             						{ value: 3, name: 'March' },
@@ -46,7 +50,19 @@
             							[50,51,52,53,54],
             							[55,56,57,58,59]];
 
-            	$scope.inputChange = function() {
+            	$scope.$watch('disabled',function(disabled) {
+            		if(disabled!==undefined) {
+            			angular.forEach($scope.months,function(month) {
+            				angular.forEach(month.weeks,function(week) {
+            					angular.forEach(week,function(day) {
+									day.disabled = isDayDisabled(moment(day.date));
+            					});
+            				});
+            			});
+            		}
+            	});
+
+            	$scope.inputChange = function(type) {
             		var date = Date.parse($scope.input);
             		if(date) {
             			$scope.model = moment(date);
@@ -70,6 +86,12 @@
             		}
             	}
 
+            	function createModel() {
+            		if(!$scope.model) {
+            			$scope.model = moment();
+            		}
+            	}
+
             	$scope.inputBlur = function(e) {
             		setDate($scope.model);
             		if(!parentDialog(e.relatedTarget)) {
@@ -78,7 +100,7 @@
             	}
 
      			$scope.inputFocus = function() {
-            		$scope.open = true;
+            		$scope.open();
            			showMonth($scope.model);
             	}
 
@@ -88,12 +110,17 @@
             		}
             	}
 
+            	$scope.open = function() {
+            		$scope.opened = true;
+            		drawMonths($scope.model);
+            		showMonth($scope.model);
+            	}
+
             	$scope.inputClick = function(e) {
 
             		var input = e.target;
             		var pos = null;
             		if ('selectionStart' in input) {
-			            // Standard-compliant browsers
 			            pos = input.selectionStart;
 			        } else if (document.selection) {
 			            // IE
@@ -116,24 +143,21 @@
 	            		var end = pos + s2[0].length;
 
 						if( input.createTextRange ) {
-						  var selRange = input.createTextRange();
-						  selRange.collapse(true);
-						  selRange.moveStart('character', start);
-						  selRange.moveEnd('character', end);
-						  selRange.select();
-						  input.focus();
+							var selRange = input.createTextRange();
+							selRange.collapse(true);
+							selRange.moveStart('character', start);
+							selRange.moveEnd('character', end);
+							selRange.select();
+							input.focus();
 						} else if( input.setSelectionRange ) {
-						  input.focus();
-						  input.setSelectionRange(start, end);
+							input.focus();
+							input.setSelectionRange(start, end);
 						} else if( typeof input.selectionStart != 'undefined' ) {
-						  input.selectionStart = start;
-						  input.selectionEnd = end;
-						  input.focus();
+							input.selectionStart = start;
+							input.selectionEnd = end;
+							input.focus();
 						}
 					}
-
-					$scope.open = true;
-           			showMonth($scope.model);
         		}
 
             	function parentDialog(el) {
@@ -148,17 +172,39 @@
             		return false;
             	}
 
-            	function createMonth(moment) {
-            		var moment = moment.clone().date(1);
+            	function isDayDisabled(md) {
+            		if(!$scope.disabled) {
+            			return false;
+            		}
+
+            		var len;
+    				for(var i=0, len = $scope.disabled.length; i < len; i++) {
+    					var value = $scope.disabled[i];
+    					if(moment.isMoment(value)) {
+    						if(value.format('YYYY-MM-DD')==md.format('YYYY-MM-DD')) {
+    							return true;
+    						}
+    					} else {
+    						if(md.isBetween(value[0].startOf('day'),value[1].startOf('day')) || md.format('YYYY-MM-DD')==value[0].format('YYYY-MM-DD')) {
+    							return true;
+    						}
+    					}
+    				}
+
+    				return false;
+            	}
+
+            	function createMonth(date) {
+            		var date = date.clone().date(1);
 
         			var days = [], weeks = [];
         			var week = [];
-        			var md = moment.clone();
+        			var md = date.clone();
 
-        			md.subtract(moment.day(),'day');
-        			var daysInMonth = moment.daysInMonth();
+        			md.subtract(date.day(),'day');
+        			var daysInMonth = date.daysInMonth();
 
-        			for(var d=0;d<daysInMonth + moment.day() + (6 - moment.clone().add(1,'month').day() + 1);d++) {
+        			for(var d=0;d<daysInMonth + date.day() + (6 - date.clone().add(1,'month').day() + 1);d++) {
         				var number = md.format('DD');
         				days.push({ number: number });
 
@@ -167,23 +213,24 @@
         					weeks.push(week);
         				}
 
-        				week.push({ mute: (d - moment.day()<0 || ((d - moment.day() + 1) > daysInMonth)),
+        				week.push({ mute: (d - date.day()<0 || ((d - date.day() + 1) > daysInMonth)),
 									date: md.format('YYYY-MM-DD'),
 									number: md.format('D'),
         							month: md.format('M'),
-									year: md.format('YYYY') });
+									year: md.format('YYYY'),
+									disabled: isDayDisabled(md) });
 
         				md.add(1,'day');
         			}
 
-            		return {name: moment.format('MMMM'),
-							number: moment.format("M"),
-							year: moment.format("YYYY"),
-							time: moment.format("x"),
-							moment: moment,
+            		return {name: date.format('MMMM'),
+							number: date.format("M"),
+							year: date.format("YYYY"),
+							time: date.format("x"),
+							moment: date,
 							weeks: weeks,
-							months: [{ name: moment.format('MMMM'), value: moment.format('M')}],
-							years: [moment.format("YYYY")] }
+							months: [{ name: date.format('MMMM'), value: date.format('M')}],
+							years: [date.format("YYYY")] }
             	}
 
             	$scope.monthClick = function(month) {
@@ -194,29 +241,21 @@
             		angular.extend(month.years,$scope.yearList);
             	}
 
-            	$scope.minuteClick = function(minute) {
-            		$scope.model.minute(minute);
-            		setDate($scope.model);
-            	}
-
-            	$scope.hourClick = function(hour) {
-            		$scope.model.hour(hour);
-            		setDate($scope.model);
-            	}
-
-            	function drawMonths(moment) {
+            	function drawMonths(date) {
+            		var date = date ? date : moment();
             		var depth = 6;
 	        		$scope.months = [];
-	        		var m = moment.clone().startOf('month').subtract(depth/2,'months');
+	        		var m = date.clone().startOf('month').subtract(depth/2,'months');
 	        		for(var i=0;i<=depth;i++) {
 	        			$scope.months.push(createMonth(m));
 	        			m.add(1,'month');
 	        		}
 	        	}
 
-	        	function showMonth(moment) {
+	        	function showMonth(date) {
 	        		setTimeout(function() {
-	               		var selected = service.$date.querySelector('.calendar-' + moment.clone().startOf('month').format('x'));
+	        			var date = date ? date : moment();
+	               		var selected = service.$date.querySelector('.calendar-' + date.clone().startOf('month').format('x'));
 
 	               		if(selected) {
 	               			service.$date.scrollTop = selected.offsetTop - 52;
@@ -242,13 +281,17 @@
             			format.push('h:mm a')
             		}
 
-            		if(options.inputUpdate===undefined) {
-            			$scope.input = $scope.model.format(format.join(' '));
-            		}
+            		if($scope.model) {
+	            		if(options.inputUpdate===undefined) {
+	            			$scope.input = $scope.model.format(format.join(' '));
+	            		}
 
-            		$scope.selectedDate = $scope.model.format('YYYY-MM-DD');
-            		$scope.selectedHour = $scope.model.format('H');
-            		$scope.selectedMinute = $scope.model.format('m');
+	            		$scope.selectedDate = $scope.model.format('YYYY-MM-DD');
+	            		$scope.selectedHour = $scope.model.format('H');
+	            		$scope.selectedMinute = $scope.model.format('m');
+	            	}
+
+            		$scope.inputLength = $scope.input.length;
             	}
 
             	var appending = false;
@@ -286,19 +329,6 @@
             		append(1);
             	}
 
-            	$scope.daySelect = function(year,month,day) {
-            		$scope.model
-            				.year(year)
-            				.month(month - 1)
-            				.date(day);
-            		setDate($scope.model);
-
-            		if(!$scope.hasTime) {
-            			$scope.close();
-            		}
-            	}
-
-
             	$scope.close = function(e) {
 /*
             		var s = document.querySelectorAll( ":hover" );
@@ -309,22 +339,87 @@
             			debugger;
             		}
 */
-					$scope.open = false;
+					$scope.opened = false;
             	}
 
-            	$scope.yearSelect = function(year) {
+            	$scope.dayClick = function(day) {
+
+            		if(day.disabled) {
+            			return;
+            		}
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
             		$scope.model
-            				.year(year);
+            				.year(day.year)
+            				.month(day.month - 1)
+            				.date(day.number);
+
+            		setDate($scope.model);
+
+            		if($scope.dateSelect) {
+            			$timeout(function() {
+            				$scope.$parent.$eval($scope.dateSelect);
+            			});
+            		}
+
+            		if(!$scope.hasTime) {
+            			$scope.close();
+            		}
+            	}
+
+            	$scope.yearChange = function(year) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.year(year);
             		setDate($scope.model);
             		drawMonths($scope.model);
             		showMonth($scope.model);
+
+            		if($scope.dateSelect) {
+            			$scope.$parent.$eval($scope.dateSelect);
+            		}
             	}
 
-            	$scope.monthSelect = function(month) {
+            	$scope.monthChange = function(month) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
             		$scope.model.month(month - 1);
             		setDate($scope.model);
             		drawMonths($scope.model);
             		showMonth($scope.model);
+
+            		if($scope.dateSelect) {
+            			$scope.$parent.$eval($scope.dateSelect);
+            		}
+            	}
+
+            	$scope.minuteClick = function(minute) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.minute(minute);
+            		setDate($scope.model);
+            	}
+
+            	$scope.hourClick = function(hour) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		$scope.model.hour(hour);
+            		setDate($scope.model);
             	}
 
             	$scope.$watch('model',function(moment) {
@@ -356,10 +451,6 @@
             		value[1] ? $el.addClass("has-date") : $el.removeClass("has-date");
             	});
 
-               	if(!$scope.model) {
-               		$scope.model = moment();
-               	}
-
                	var el = $el[0];
 
                	setTimeout(function() {
@@ -369,73 +460,19 @@
 	                    $el.append(response.data);
 	                    $compile(angular.element(el.querySelector('.dialog')))($scope);
 
-	                    /*if($scope.hasTime) {
-							var clock = el.querySelector('.time .clock');
-							for (var i=1; i<=12; i++) {
-								var nmb = document.createElementNS("http://www.w3.org/2000/svg","text");
-							  	var ang = 90 - 30 * i,
-							  		nx = 48 + 38 * Math.cos(ang*Math.PI/180),
-							  		ny = 52 - 38 * Math.sin(ang*Math.PI/180);
-							 	nmb.setAttributeNS(null,"x",nx);
-							  	nmb.setAttributeNS(null,"y",ny);
-							 	nmb.setAttributeNS(null,"font-size","8");
-								nmb.appendChild(document.createTextNode(i));
-								clock.appendChild(nmb);
-							}
-
-							var movingElem = null;
-							function mouseDown(e) {
-								movingElem = e.target;
-							}
-
-							function mouseUp(e) {
-								movingElem = null;
-							}
-
-							function mouseMove(e) {
-							  	if (movingElem) {
-								    // get mouse coords in the svg coordinate system and
-								    // calculate angle in relation to the mid-point (50, 50)
-								    // more info: https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
-									var vwp = movingElem.nearestViewportElement,
-										ctm = vwp.getScreenCTM(),
-								        pnt = vwp.createSVGPoint();
-										pnt.x = e.clientX;
-										pnt.y = e.clientY;
-								    var loc = pnt.matrixTransform(ctm.inverse());
-										var deg = 90 - Math.atan2(50 - loc.y, loc.x - 50) * 180 / Math.PI;
-										movingElem.setAttribute('transform', 'rotate(' + deg + ' 50 50)');
-							  	}
-							}
-							var min = el.querySelector('.time .hands .min');
-							var hour = el.querySelector('.time .hands .hour');
-							min.addEventListener('mousedown', mouseDown, false);
-							hour.addEventListener('mousedown', mouseDown, false);
-							document.addEventListener('mouseup', mouseUp, false);
-							document.addEventListener('mousemove', mouseMove, false);
-						}*/
-
-	                    ctrl.drawMonths($scope.model);
+	                    var date = $scope.model ? $scope.model : moment();
 	                    var padding = 400;
-	                    //var timeout = null;
+
 	               		ctrl.$date = el.querySelector('.date');
 	               		angular.element(ctrl.$date).on('scroll',function(e) {
 	               			if(e.target.scrollTop<padding) {
 	               				ctrl.appendBottom();
-	               				//clearTimeout(timeout);
-	               				//timeout = setTimeout(calendarEnable,100);
 	               			} else if((e.target.scrollHeight)<(e.target.scrollTop + e.target.offsetHeight + padding)) {
 	               				ctrl.appendTop();
-	               				//clearTimeout(timeout);
-	               				//timeout = setTimeout(calendarEnable,100);
 	               			}
 	               		});
 	                });
 	            });
-
-               	/*function calendarEnable() {
-               		//debugger;
-               	}*/
 
                	if($scope.model) {
                		ctrl.setDate($scope.model);
@@ -446,5 +483,38 @@
 				});
             }
         };
+    })
+	.directive('fsDatetimeRange', function() {
+        return {
+            restrict: 'E',
+            templateUrl: 'views/directives/datetimerange.html',
+            scope: {
+               from: '=fsFrom',
+               to: '=fsTo',
+               fromLabel: '@fsFromLabel',
+               toLabel: '@fsToLabel',
+               hasTime: '=?fsTime',
+               hasDate: '=?fsDate'
+            },
+            controller: function($scope) {
+
+            	$scope.fromSelect = function() {
+            		if($scope.from) {
+            			$scope.toDisabled = [[moment().subtract(99,'year'),$scope.from.clone().add(1,'day')]];
+            		} else {
+            			$scope.toDisabled = [];
+            		}
+            	}
+
+            	$scope.toSelect = function() {
+            		if($scope.to) {
+            			$scope.fromDisabled = [[$scope.to.clone(),moment().add(99,'year')]];
+            		} else {
+            			$scope.fromDisabled = [];
+            		}
+            	}
+            }
+       	}
     });
+
 })();
