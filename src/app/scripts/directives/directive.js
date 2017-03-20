@@ -500,7 +500,7 @@
 
             	$scope.fromSelect = function() {
             		if($scope.from) {
-            			$scope.toDisabled = [[moment().subtract(99,'year'),$scope.from.clone().add(1,'day')]];
+            			$scope.toDisabled = [[moment().subtract(99,'year'),$scope.from.clone()]];
             		} else {
             			$scope.toDisabled = [];
             		}
@@ -508,7 +508,7 @@
 
             	$scope.toSelect = function() {
             		if($scope.to) {
-            			$scope.fromDisabled = [[$scope.to.clone(),moment().add(99,'year')]];
+            			$scope.fromDisabled = [[$scope.to.clone().add(1,'day'),moment().add(99,'year')]];
             		} else {
             			$scope.fromDisabled = [];
             		}
