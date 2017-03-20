@@ -15,12 +15,13 @@ fs-datetime .backdrop {
     background:none !important;
 }
 
-fs-datetime .dialog {
-	position: absolute;
-    z-index: 51;
+.fs-datetime-dialog {
+	position: fixed;
+    z-index: 80;
     display: table;
     outline: none;
     left: 0;
+    margin-top: 22px;
 }
 
 fs-datetime .md-input {
@@ -39,31 +40,31 @@ fs-datetime.has-time .md-input {
 	width: auto;
 }
 
-fs-datetime .dialog .wrap {
+.fs-datetime-dialog .wrap {
     background: #fff;
     box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     width: 372px;
 }
 
-fs-datetime .dialog .date-time {
+.fs-datetime-dialog .date-time {
 	height: 365px;
 }
 
-fs-datetime.has-time.has-date .dialog .date-time,
-fs-datetime.has-time:not(.has-date) .dialog .date-time {
+.fs-datetime-dialog.has-time.has-date .date-time,
+.fs-datetime-dialog.has-time:not(.has-date) .date-time {
 	height: 414px;
 }
 
-fs-datetime.has-time.has-date .dialog .wrap {
+.fs-datetime-dialog.has-time.has-date .wrap {
     width: 645px;
 }
 
-fs-datetime.has-time:not(.has-date) .dialog .wrap {
+.fs-datetime-dialog.has-time:not(.has-date) .wrap {
      width: auto;
 }
 
-fs-datetime .dialog .wrap:after,
-fs-datetime .dialog .wrap:before {
+.fs-datetime-dialog .wrap:after,
+.fs-datetime-dialog .wrap:before {
 	border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 19px solid #fff;
@@ -75,7 +76,7 @@ fs-datetime .dialog .wrap:before {
     left: 23px;
 }
 
-fs-datetime .dialog .wrap:before {
+.fs-datetime-dialog .wrap:before {
     border-left: 23px solid transparent;
     border-right: 23px solid transparent;
     border-top: 21px solid transparent;
@@ -84,11 +85,11 @@ fs-datetime .dialog .wrap:before {
     left: 20px;
 }
 
-fs-datetime .dialog .date::-webkit-scrollbar {
+.fs-datetime-dialog .date::-webkit-scrollbar {
     display: none;
 }
 
-fs-datetime .dialog .month-year {
+.fs-datetime-dialog .month-year {
 	height: 45px;
 	font-size: 17px;
 	padding-left: 15px;
@@ -96,41 +97,42 @@ fs-datetime .dialog .month-year {
 	border-left: none;
 }
 
-fs-datetime .dialog .year,
-fs-datetime .dialog .month {
+.fs-datetime-dialog .year,
+.fs-datetime-dialog .month {
     margin: 0;
     color: inherit;
     font-size: inherit;
     margin-right: 5px;
 }
 
-fs-datetime .dialog .month-year .md-select-value .md-select-icon {
+.fs-datetime-dialog .month-year .md-select-value .md-select-icon {
 	visibility: hidden;
 	width: 15px;
 	display: none;
 }
 
-fs-datetime .dialog .month-year .md-select-value {
+.fs-datetime-dialog .month-year .md-select-value {
 	border-color: transparent;
 	border-width: 1px;
 	min-width: auto;
 	padding: 0;
 }
 
-fs-datetime .dialog .month-year:hover .md-select-value .md-select-icon {
+.fs-datetime-dialog .month-year:hover .md-select-value .md-select-icon {
 	visibility: visible;
 }
 
-fs-datetime .dialog .month-year:hover .md-select-value {
+.fs-datetime-dialog .month-year:hover .md-select-value {
+	border-width: 1px;
 	border-color: #e1e1e1;
 }
 
-fs-datetime .dialog table {
+.fs-datetime-dialog table {
 	border-collapse: collapse;
 	margin-right: 1px;
 }
 
-fs-datetime .dialog .day {
+.fs-datetime-dialog .day {
 	text-align: center;
 	width: 50px;
 	height: 50px;
@@ -140,42 +142,42 @@ fs-datetime .dialog .day {
 	outline: none;
 }
 
-fs-datetime .dialog .date tr td:first-child {
+.fs-datetime-dialog .date tr td:first-child {
 	border-left: 1px solid transparent;
 }
 
-fs-datetime .dialog .day span {
+.fs-datetime-dialog .day span {
 	width: 96%;
 	height: 96%;
 	display: block;
 }
 
-fs-datetime .dialog .day:hover {
+.fs-datetime-dialog .day:hover {
 	background: rgba(70,120,174,.15);
 }
 
-fs-datetime .dialog .day.selected {
+.fs-datetime-dialog .day.selected {
 	background: #4678AE;
 	color: #fff;
 }
 
-fs-datetime .dialog .day.mute {
+.fs-datetime-dialog .day.mute {
 	color: #d7d7d7;
 }
 
-fs-datetime .dialog .day.disabled {
+.fs-datetime-dialog .day.disabled {
 	color: #a6a5a5;
 	cursor: initial;
 	background: #efefef;
 }
 
-fs-datetime .dialog thead {
+.fs-datetime-dialog thead {
 	position: absolute;
 	top: 0;
 	z-index: 50;
 }
 
-fs-datetime .dialog thead th {
+.fs-datetime-dialog thead th {
 	width: 50px;
 	height: 50px;
 	text-align: center;
@@ -184,29 +186,29 @@ fs-datetime .dialog thead th {
 	border-bottom: 1px solid #efefef;
 }
 
-fs-datetime .dialog thead th,
+.fs-datetime-dialog thead th,
 fs-datetime .lbl {
 	font-weight: normal;
 	font-size: 12px;
 	color: #4d4d4d;
 }
 
-fs-datetime .dialog .date {
+.fs-datetime-dialog .date {
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-fs-datetime .dialog .time {
+.fs-datetime-dialog .time {
 	padding: 12px 15px;
 }
 
-fs-datetime .dialog .time .hours table {
+.fs-datetime-dialog .time .hours table {
 	border-collapse: collapse;
 	width: 100%;
 }
 
-fs-datetime .dialog .time .hour:not(.disabled),
-fs-datetime .dialog .time .minute:not(.disabled) {
+.fs-datetime-dialog .time .hour:not(.disabled),
+.fs-datetime-dialog .time .minute:not(.disabled) {
     width: 31px;
     height: 31px;
     text-align: center;
@@ -215,70 +217,70 @@ fs-datetime .dialog .time .minute:not(.disabled) {
     cursor: pointer;
 }
 
-fs-datetime .dialog .time .hour .number,
-fs-datetime .dialog .time .minute .number {
+.fs-datetime-dialog .time .hour .number,
+.fs-datetime-dialog .time .minute .number {
     /*border: 1px solid transparent;*/
 	/*border-radius: 50%;*/
     line-height: 28px;
     height: 28px;
 }
 
-fs-datetime .dialog .time .hour .number {
+.fs-datetime-dialog .time .hour .number {
 	/*font-size: 12px;*/
 }
 
-fs-datetime .dialog .time .hour:hover:not(.disabled),
-fs-datetime .dialog .time .minute:hover:not(.disabled) {
+.fs-datetime-dialog .time .hour:hover:not(.disabled),
+.fs-datetime-dialog .time .minute:hover:not(.disabled) {
     background: rgba(70,120,174,.15);
 }
 
-fs-datetime .dialog .time .hour.selected:not(.disabled),
-fs-datetime .dialog .time .minute.selected:not(.disabled) {
+.fs-datetime-dialog .time .hour.selected:not(.disabled),
+.fs-datetime-dialog .time .minute.selected:not(.disabled) {
     background: #4678AE;
     color: #fff;
 }
 
-fs-datetime .dialog .time .minutes {
+.fs-datetime-dialog .time .minutes {
 	margin-left: 15px;
 }
 
-fs-datetime .dialog .time .minutes table {
+.fs-datetime-dialog .time .minutes table {
 	border-collapse: collapse;
 	width: 100%;
 }
 
-fs-datetime .dialog .time .minute.disabled {
+.fs-datetime-dialog .time .minute.disabled {
     background: #efefef;
 }
 
-fs-datetime .dialog .time .lbl {
+.fs-datetime-dialog .time .lbl {
     margin-bottom: 3px;
 }
 
-fs-datetime .dialog .time .midnight {
+.fs-datetime-dialog .time .midnight {
     line-height: 8px;
     display: block;
 }
 
-fs-datetime .dialog .time .midnight div {
+.fs-datetime-dialog .time .midnight div {
     line-height: 16px;
 }
 
-fs-datetime .dialog .time .midnight,
-fs-datetime .dialog .time .noon {
+.fs-datetime-dialog .time .midnight,
+.fs-datetime-dialog .time .noon {
 	font-size: 10px;
 }
 
-fs-datetime .dialog .time .hour .am-pm {
+.fs-datetime-dialog .time .hour .am-pm {
 	font-size: 9px;
     margin-left: 1px;
 }
 
-fs-datetime .dialog .time .hour .number.textual {
+.fs-datetime-dialog .time .hour .number.textual {
 	font-size: 11px;
 }
 
-fs-datetime .dialog . {
+.fs-datetime-dialog . {
 	font-size: 11px;
 }
 

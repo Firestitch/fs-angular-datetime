@@ -10,6 +10,7 @@
     "angular-material": "1.1.1",
     "angular-ui-router": "0.3.2",
     "fs-boilerplate-styles": "^1.0.0",
+    "fs-angular-modal": "^1.0.0",
     "moment": "2.10.6"
   },
   "resolutions": {

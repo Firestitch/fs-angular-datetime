@@ -5,7 +5,8 @@ angular
     'config',
     'ui.router',
     'ngMaterial',
-    'fs-angular-datetime'
+    'fs-angular-datetime',
+    'fs-angular-modal'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 
