@@ -2186,8 +2186,8 @@ Date.CultureInfo = {
 (function () {
     'use strict';
 
-    angular.module('fs-angular-datetime',[])
-    .directive('fsDatetime', function($timeout,$templateCache,$http,$compile) {
+    angular.module('fs-angular-datetime',['fs-angular-util'])
+    .directive('fsDatetime', function($timeout,$templateCache,$http,$compile,fsUtil) {
         return {
             restrict: 'E',
             templateUrl: 'views/directives/datetime.html',
@@ -2302,7 +2302,9 @@ Date.CultureInfo = {
 
             		$timeout(function() {
             			$scope.opened = true;
-            			positionDialog();
+            			setTimeout(function() {
+            				positionDialog();
+            			});
             		});
             	}
 
@@ -2599,9 +2601,31 @@ Date.CultureInfo = {
 
             	function positionDialog() {
         			var input = $scope.$el.find('input');
-        			var bound = input[0].getBoundingClientRect();
-        			$scope.$dialog.css({ 	top: (parseInt(bound.top) + input[0].offsetHeight) + 'px',
-        									left: parseInt(bound.left) + 'px' });
+        			var inputBound = input[0].getBoundingClientRect();
+        			var dialogBound = $scope.$dialog[0].getBoundingClientRect();
+
+        			var top = parseInt(inputBound.top) + inputBound.height;
+        			var left = parseInt(inputBound.left);
+
+        			var css = { top: '', bottom: '', left: '', right: '' };
+
+        			if((top + dialogBound.height)>window.innerHeight) {
+        				css.bottom = '10px';
+        				$scope.$dialog.addClass('vertical-reposition');
+        			} else {
+        				css.top = top + 'px';
+        				$scope.$dialog.removeClass('vertical-reposition');
+        			}
+
+        			if((left + dialogBound.width)>window.innerWidth) {
+        				css.right = '10px';
+        				$scope.$dialog.addClass('horizontal-reposition');
+        			} else {
+        				css.left = left + 'px';
+        				$scope.$dialog.removeClass('horizontal-reposition');
+        			}
+
+        			$scope.$dialog.css(css);
             	}
 
             	$scope.$watch('model',function(date,odate) {
@@ -2691,7 +2715,7 @@ Date.CultureInfo = {
 	                });
 	            });
 
-	            angular.element(window).on('scroll resize',windowScroll);
+	            angular.element(window).on('scroll resize',fsUtil.throttle(windowScroll,2));
 
                 $scope.$on('$destroy',function() {
 					angular.element(ctrl.$date).off('scroll',dateScroll);
@@ -2705,7 +2729,6 @@ Date.CultureInfo = {
             		value[0] ? $el.addClass("has-time") : $el.removeClass("has-time");
             		value[1] ? $el.addClass("has-date") : $el.removeClass("has-date");
             	});
-
             }
         };
     })

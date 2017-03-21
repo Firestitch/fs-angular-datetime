@@ -6,7 +6,8 @@
     "dist/datetime.css"
   ],
   "dependencies": {
-    "moment": "2.10.6"
+    "moment": "2.10.6",
+    "fs-angular-util": "^1.0.0",
   },
   "authors": [
     "Firestitch Inc."

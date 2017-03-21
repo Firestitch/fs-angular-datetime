@@ -15,15 +15,6 @@ fs-datetime .backdrop {
     background:none !important;
 }
 
-.fs-datetime-dialog {
-	position: fixed;
-    z-index: 80;
-    display: table;
-    outline: none;
-    left: 0;
-    margin-top: 22px;
-}
-
 fs-datetime .md-input {
 	min-width: 100px;
 }
@@ -38,6 +29,18 @@ fs-datetime.has-time:not(.has-date) .md-input {
 
 fs-datetime.has-time .md-input {
 	width: auto;
+}
+
+.fs-datetime-dialog {
+	position: fixed;
+    z-index: 80;
+    display: table;
+    outline: none;
+    margin-top: 22px;
+}
+
+.fs-datetime-dialog * {
+	user-select: none;
 }
 
 .fs-datetime-dialog .wrap {
@@ -63,8 +66,8 @@ fs-datetime.has-time .md-input {
      width: auto;
 }
 
-.fs-datetime-dialog .wrap:after,
-.fs-datetime-dialog .wrap:before {
+.fs-datetime-dialog:not(.vertical-reposition):not(.horizontal-reposition) .wrap:after,
+.fs-datetime-dialog:not(.vertical-reposition):not(.horizontal-reposition) .wrap:before {
 	border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 19px solid #fff;
@@ -76,7 +79,7 @@ fs-datetime.has-time .md-input {
     left: 23px;
 }
 
-.fs-datetime-dialog .wrap:before {
+.fs-datetime-dialog:not(.vertical-reposition):not(.horizontal-reposition) .wrap:before {
     border-left: 23px solid transparent;
     border-right: 23px solid transparent;
     border-top: 21px solid transparent;
