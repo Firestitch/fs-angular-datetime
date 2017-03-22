@@ -34,9 +34,13 @@ fs-datetime.has-time .md-input {
 .fs-datetime-dialog {
 	position: fixed;
     z-index: 80;
-    display: table;
+    display: none;
     outline: none;
     margin-top: 22px;
+}
+
+.fs-datetime-dialog.opened {
+	user-select: none;
 }
 
 .fs-datetime-dialog * {
