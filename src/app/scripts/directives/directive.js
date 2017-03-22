@@ -15,7 +15,8 @@
                hasRange: '=?fsRange',
                disabled: '=?fsDisabled',
                disabledDays: '=?fsDisabledDays',
-               dateSelect: '@fsDateSelect'
+               dateSelect: '@fsDateSelect',
+               required: '=?fsRequired',
             },
             controller: function($scope) {
 
@@ -26,6 +27,7 @@
             	$scope.opened = false;
             	$scope.input = '';
             	$scope.depth = 6;
+            	$scope.name = fsUtil.guid();
             	$scope.monthList = [{ value: 1, name: 'January' },
             						{ value: 2, name: 'February' },
             						{ value: 3, name: 'March' },
@@ -114,13 +116,8 @@
             	$scope.open = function() {
             		drawMonths($scope.model);
             		showMonth($scope.model);
-
-            		$timeout(function() {
-            			$scope.opened = true;
-            			setTimeout(function() {
-            				positionDialog();
-            			});
-            		});
+            		positionDialog();
+            		$scope.opened = true;
             	}
 
             	$scope.inputClick = function(e) {
@@ -176,8 +173,6 @@
             	$scope.yearClick = function(month) {
             		angular.extend(month.years,$scope.yearList);
             	}
-
-
 
             	$scope.close = function(e) {
 /*
