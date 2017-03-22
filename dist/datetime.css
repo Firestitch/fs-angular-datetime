@@ -40,7 +40,7 @@ fs-datetime.has-time .md-input {
 }
 
 .fs-datetime-dialog.opened {
-	user-select: none;
+	display: block;
 }
 
 .fs-datetime-dialog * {
