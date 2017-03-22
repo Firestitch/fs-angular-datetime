@@ -2280,7 +2280,6 @@ Date.CultureInfo = {
             	}
 
             	$scope.inputBlur = function(e) {
-
             		$scope.focused = false;
             		if(!parentDialog(e.relatedTarget)) {
             			$scope.close();
