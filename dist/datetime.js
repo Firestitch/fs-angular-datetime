@@ -2738,7 +2738,8 @@ Date.CultureInfo = {
                toLabel: '@fsToLabel',
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
-               disabled: '=?fsDisabled'
+               disabled: '=?fsDisabled',
+               required: '=?fsRequired'
             },
             controller: function($scope) {
 
@@ -2767,7 +2768,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<div layout=\"row\" layout-align=\"start center\"><md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"name\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container></div><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
+    "<div layout=\"row\" layout-align=\"start center\"><md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container></div><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 
@@ -2777,7 +2778,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
 
 
   $templateCache.put('views/directives/datetimerange.html',
-    "<div layout=\"row\"><fs-datetime fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"fromSelect()\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"toSelect()\"></fs-datetime></div>"
+    "<div layout=\"row\"><fs-datetime fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"fromSelect()\" fs-required=\"required\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"toSelect()\" fs-required=\"required\"></fs-datetime></div>"
   );
 
 }]);

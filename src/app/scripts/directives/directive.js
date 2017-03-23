@@ -553,7 +553,8 @@
                toLabel: '@fsToLabel',
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
-               disabled: '=?fsDisabled'
+               disabled: '=?fsDisabled',
+               required: '=?fsRequired'
             },
             controller: function($scope) {
 
