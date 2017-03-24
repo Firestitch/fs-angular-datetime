@@ -261,7 +261,8 @@ fs-datetime .lbl {
 }
 
 .fs-datetime-dialog .time .lbl {
-    margin-bottom: 3px;
+        margin-bottom: 2px;
+    font-size: 12px;
 }
 
 .fs-datetime-dialog .time .midnight {
