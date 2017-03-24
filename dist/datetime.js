@@ -2303,6 +2303,7 @@ Date.CultureInfo = {
             		showMonth($scope.model);
             		positionDialog();
             		$scope.opened = true;
+            		setTimeout(positionDialog);
             	}
 
             	$scope.inputClick = function(e) {
@@ -2768,7 +2769,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<div layout=\"row\" layout-align=\"start center\"><md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container></div><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
+    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 

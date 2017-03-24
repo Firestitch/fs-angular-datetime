@@ -118,6 +118,7 @@
             		showMonth($scope.model);
             		positionDialog();
             		$scope.opened = true;
+            		setTimeout(positionDialog);
             	}
 
             	$scope.inputClick = function(e) {
