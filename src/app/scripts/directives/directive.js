@@ -11,6 +11,7 @@
                label: '@?fsLabel',
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
+               hasCalendar: '=?fsCalendar',
                defaultTime: '@fsDefaultTime',
                hasRange: '=?fsRange',
                disabled: '=?fsDisabled',
@@ -20,10 +21,8 @@
             },
             controller: function($scope) {
 
-            	if($scope.hasDate===undefined) {
-            		$scope.hasDate = true;
-            	}
-
+            	$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
+            	$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
             	$scope.opened = false;
             	$scope.input = '';
             	$scope.depth = 6;
@@ -228,6 +227,15 @@
             		if($scope.dateSelect) {
             			$scope.$parent.$eval($scope.dateSelect);
             		}
+            	}
+
+            	$scope.dayChange = function(day) {
+
+            		if(!$scope.model) {
+            			createModel();
+            		}
+
+            		setDate($scope.model.clone().date(day));
             	}
 
             	$scope.monthChange = function(month) {
@@ -479,6 +487,8 @@
 	            		$scope.selectedHour = date.format('H');
 	            		$scope.selectedMinute = date.format('m');
 	            		$scope.selectedYear = date.format('YYYY');
+	            		$scope.selectedMonth = date.format('M');
+	            		$scope.selectedDay = date.format('D');
             		}
             	});
 
@@ -526,7 +536,7 @@
 	                });
 	            });
 
-	            angular.element(window).on('scroll resize',fsUtil.throttle(windowScroll,2));
+	            angular.element(window).on('scroll resize',windowScroll);
 
                 $scope.$on('$destroy',function() {
 					angular.element(ctrl.$date).off('scroll',dateScroll);
@@ -576,6 +586,24 @@
             	}
             }
        	}
-    });
+    })
+	.filter('fsDatetimeYearRange', function() {
+	return function(years) {
+    	var year = parseInt(moment().format('YYYY'));
+		for(var y=year + 100;y>(year-100);y--) {
+			years.push(y);
+		}
+
+		return years;
+	}})
+	.filter('fsDatetimeDayRange', function() {
+	return function(days,month,year) {
+    	var max = new Date(year, month, 0).getDate();
+		for(var d=1;d<=max;d++) {
+			days.push(d);
+		}
+
+		return days;
+	}});
 
 })();
