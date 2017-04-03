@@ -165,8 +165,13 @@
 
             	function createModel() {
             		if(!$scope.model) {
-            			$scope.model = moment();
+            			debugger;
+            			$scope.model = createMoment();
             		}
+            	}
+
+            	function createMoment() {
+            		return moment().startOf('day');
             	}
 
             	$scope.inputBlur = function(e) {
@@ -424,7 +429,7 @@
             			return;
             		}
 
-            		var date = date ? date : moment();
+            		var date = date ? date : createMoment();
             		var month = date.clone().startOf('month').subtract($scope.depth/2,'months');
 
 	        		$scope.months = [];
@@ -438,7 +443,7 @@
 
 	        		setTimeout(angular.bind(this,function(d) {
 
-	        			var d = d ? d : moment();
+	        			var d = d ? d : createMoment();
 	        			var month = queryMonth(d);
 
 	               		if(month) {
@@ -561,7 +566,6 @@
 	                	$scope.$dialog = angular.element(response.data);
 	                    angular.element(document.body).append($scope.$dialog);
 	                    $compile($scope.$dialog)($scope);
-	                    var date = $scope.model ? $scope.model : moment();
 	                    ctrl.$date = $scope.$dialog[0].querySelector('.date');
 	               		angular.element(ctrl.$date).on('scroll',dateScroll);
 	                });
