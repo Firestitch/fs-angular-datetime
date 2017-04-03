@@ -2350,7 +2350,6 @@ Date.CultureInfo = {
 
             	function createModel() {
             		if(!$scope.model) {
-            			debugger;
             			$scope.model = createMoment();
             		}
             	}
