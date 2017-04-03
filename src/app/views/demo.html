@@ -8,6 +8,7 @@
 		<fs-datetime fs-model="model3" fs-label="Date/Time" fs-time="true" fs-default-time="9:00"></fs-datetime> -->
 				<!-- <fs-datetime fs-model="model4" fs-label="Time" fs-time="true" fs-date="false"></fs-datetime> -->
 		<fs-datetime fs-model="model4" fs-label="Time" fs-date="false" fs-time="true"></fs-datetime>
+		<fs-datetime fs-model="modelUpdate" fs-label="Date Update"></fs-datetime>
 
 		<fs-datetime-range fs-from="from" fs-to="to" fs-to-label="End Date" fs-from-label="Start Date" fs-date="true"></fs-datetime-range>
 
@@ -17,7 +18,8 @@
 		<h3>Date: {{model}}</h3>
 		<h3>Range: {{from}} - {{to}}</h3>
 
-		<md-button class="md-accent" ng-click="update()">Update</md-button>
+		<md-button class="md-accent" ng-click="updateInvalid()">Update Invalid</md-button>
+		<md-button class="md-accent" ng-click="updateInt()">Update Int</md-button>
 		<md-button class="md-accent" ng-click="open()" class="md-raised">Open</md-button>
 	</div>
 </div>

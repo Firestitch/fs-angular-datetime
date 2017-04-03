@@ -298,5 +298,10 @@ fs-datetime .lbl {
 }
 
 fs-datetime-range .to {
-	padding: 26px 7px;
+	padding: 0 7px;
+	padding-top: 26px;
+}
+
+fs-datetime-range.md-no-label .to {
+	padding-top: 8px;
 }

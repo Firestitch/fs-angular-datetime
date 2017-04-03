@@ -2187,7 +2187,7 @@ Date.CultureInfo = {
     'use strict';
 
     angular.module('fs-angular-datetime',['fs-angular-util'])
-    .directive('fsDatetime', function($timeout,$templateCache,$http,$compile,fsUtil) {
+    .directive('fsDatetime', function($timeout,$templateCache,$http,$compile,fsUtil,fsDatetime) {
         return {
             restrict: 'E',
             templateUrl: 'views/directives/datetime.html',
@@ -2201,8 +2201,9 @@ Date.CultureInfo = {
                hasRange: '=?fsRange',
                disabled: '=?fsDisabled',
                disabledDays: '=?fsDisabledDays',
-               dateSelect: '@fsDateSelect',
+               change: '@fsChange',
                required: '=?fsRequired',
+               class: '@fsClass'
             },
             controller: function($scope) {
 
@@ -2250,10 +2251,84 @@ Date.CultureInfo = {
             		}
             	});
 
+            	var disableWatch = false;
+            	$scope.$watch('model',function(value,ovalue) {
+
+					if(disableWatch) {
+						disableWatch = false;
+						return;
+					}
+
+					var format = [],
+            			options = options || {};
+
+           			if(fsUtil.isInt(value)) {
+            			value = moment(new Date(value));
+            		} else if(fsUtil.isString(value)) {
+            			value = moment(Date.parse(value));
+            		}
+
+            		if(value && moment(value).isValid()) {
+
+        				value = moment(value);
+        				$scope.model = value;
+
+	            		if($scope.hasDate) {
+	            			format.push('MMM D, YYYY');
+	            		}
+
+	            		if($scope.hasTime) {
+	            			format.push('h:mm a');
+	            		}
+
+	            		if(!$scope.focused) {
+	            			$scope.input = value.format(format.join(' '));
+	            			$scope.inputLength = $scope.input.length;
+	            		}
+
+		        		//if(!odate || !date.isSame(odate.clone().startOf('month').subtract($scope.depth/2,'months'))) {
+		            		drawMonths(value);
+		            	//}
+
+		            	var year = parseInt(value.format('YYYY'));
+		            	if(parseInt($scope.selectedYear)!=year) {
+	            			$scope.yearList = [];
+	            			for(var y=year + 100;y>(year-100);y--) {
+	            				$scope.yearList.push(y);
+	            			}
+	            		}
+
+	            		showMonth(value);
+	            		$scope.selectedDate = value.format('YYYY-MM-DD');
+	            		$scope.selectedHour = value.format('H');
+	            		$scope.selectedMinute = value.format('m');
+	            		$scope.selectedYear = value.format('YYYY');
+	            		$scope.selectedMonth = value.format('M');
+	            		$scope.selectedDay = value.format('D');
+
+	            	} else {
+            			$scope.input = '';
+	            		$scope.inputLength = $scope.input.length;
+            			$scope.model = undefined;
+	            		$scope.selectedDate = undefined;
+	            		$scope.selectedHour = undefined;
+	            		$scope.selectedMinute = undefined;
+	            		$scope.selectedYear = undefined;
+	            		$scope.selectedMonth = undefined;
+	            		$scope.selectedDay = undefined;
+            		}
+
+            		if(value!=ovalue) {
+	            		//Disable the next watch
+	            		disableWatch = true;
+	            	}
+            	});
+
             	$scope.inputChange = function(type) {
-            		var date = Date.parse($scope.input);
+            		var date = fsDatetime.parse($scope.input);
             		if(date) {
             			$scope.model = moment(date);
+
 
             			if($scope.defaultTime) {
             				if(!parseInt($scope.model.format('H')) && !parseInt($scope.model.format('m'))) {
@@ -2268,6 +2343,7 @@ Date.CultureInfo = {
 
             			if($scope.model) {
             				setDate($scope.model);
+            				change();
             			}
             		}
             	}
@@ -2389,12 +2465,7 @@ Date.CultureInfo = {
 	            				.date(day.number);
 
             		setDate(date);
-
-            		if($scope.dateSelect) {
-            			$timeout(function() {
-            				$scope.$parent.$eval($scope.dateSelect);
-            			});
-            		}
+            		change();
 
             		if(!$scope.hasTime) {
             			$scope.close();
@@ -2408,10 +2479,7 @@ Date.CultureInfo = {
             		}
 
             		setDate($scope.model.clone().year(year));
-
-            		if($scope.dateSelect) {
-            			$scope.$parent.$eval($scope.dateSelect);
-            		}
+            		change();
             	}
 
             	$scope.dayChange = function(day) {
@@ -2421,6 +2489,7 @@ Date.CultureInfo = {
             		}
 
             		setDate($scope.model.clone().date(day));
+            		change();
             	}
 
             	$scope.monthChange = function(month) {
@@ -2430,10 +2499,7 @@ Date.CultureInfo = {
             		}
 
             		setDate($scope.model.clone().month(month - 1));
-
-            		if($scope.dateSelect) {
-            			$scope.$parent.$eval($scope.dateSelect);
-            		}
+            		change();
             	}
 
             	$scope.minuteClick = function(minute) {
@@ -2443,6 +2509,7 @@ Date.CultureInfo = {
             		}
 
             		setDate($scope.model.clone().minute(minute));
+            		change();
             	}
 
             	$scope.hourClick = function(hour) {
@@ -2452,6 +2519,7 @@ Date.CultureInfo = {
             		}
 
             		setDate($scope.model.clone().hour(hour));
+            		change();
             	}
 
             	function parentDialog(el) {
@@ -2486,6 +2554,14 @@ Date.CultureInfo = {
     				}
 
     				return false;
+            	}
+
+            	function change() {
+            		if($scope.change) {
+            			setTimeout(function() {
+            				$scope.$parent.$eval($scope.change);
+            			});
+            		}
             	}
 
             	function createMonth(date) {
@@ -2632,51 +2708,6 @@ Date.CultureInfo = {
         			$scope.$dialog.css(css);
             	}
 
-            	$scope.$watch('model',function(date,odate) {
-
-            		var format = [],
-            			options = options || {};
-
-               		if(date instanceof Date) {
-               			date = moment(date);
-               		}
-
-            		if($scope.hasDate) {
-            			format.push('MMM D, YYYY');
-            		}
-
-            		if($scope.hasTime) {
-            			format.push('h:mm a');
-            		}
-
-            		if(date) {
-	            		if(!$scope.focused) {
-	            			$scope.input = date.format(format.join(' '));
-	            			$scope.inputLength = $scope.input.length;
-	            		}
-
-		        		//if(!odate || !date.isSame(odate.clone().startOf('month').subtract($scope.depth/2,'months'))) {
-		            		drawMonths(date);
-		            	//}
-
-		            	var year = parseInt(date.format('YYYY'));
-		            	if(parseInt($scope.selectedYear)!=year) {
-	            			$scope.yearList = [];
-	            			for(var y=year + 100;y>(year-100);y--) {
-	            				$scope.yearList.push(y);
-	            			}
-	            		}
-
-	            		showMonth(date);
-	            		$scope.selectedDate = date.format('YYYY-MM-DD');
-	            		$scope.selectedHour = date.format('H');
-	            		$scope.selectedMinute = date.format('m');
-	            		$scope.selectedYear = date.format('YYYY');
-	            		$scope.selectedMonth = date.format('M');
-	            		$scope.selectedDay = date.format('D');
-            		}
-            	});
-
             	var service = {
             		wrap: null,
             		createMonth: createMonth,
@@ -2750,23 +2781,31 @@ Date.CultureInfo = {
                hasTime: '=?fsTime',
                hasDate: '=?fsDate',
                disabled: '=?fsDisabled',
-               required: '=?fsRequired'
+               required: '=?fsRequired',
+               change: '@fsChange',
+               class: '@fsClass'
+            },
+            link: function($scope, $el) {
+            	$scope.$watch('class',function(value) {
+            		if(value) {
+            			value.match(/md-no-message/i) ? $el.addClass("md-no-message") : $el.removeClass("md-no-message");
+            			value.match(/md-no-label/i) ? $el.addClass("md-no-label") : $el.removeClass("md-no-label");
+            		}
+            	});
             },
             controller: function($scope) {
 
-            	$scope.fromSelect = function() {
-            		if($scope.from) {
-            			$scope.toDisabledDays = [[moment().subtract(99,'year'),$scope.from.clone()]];
-            		} else {
-            			$scope.toDisabledDays = [];
-            		}
-            	}
+            	$scope.$watch('from',function() {
+            		$scope.toDisabledDays = $scope.from ? [[moment().subtract(99,'year'),$scope.from.clone()]] : [];
+            	});
 
-            	$scope.toSelect = function() {
-            		if($scope.to) {
-            			$scope.fromDisabledDays = [[$scope.to.clone().add(1,'day'),moment().add(99,'year')]];
-            		} else {
-            			$scope.fromDisabledDays = [];
+            	$scope.$watch('to',function() {
+            		$scope.fromDisabledDays = $scope.to ? [[$scope.to.clone().add(1,'day'),moment().add(99,'year')]] : [];
+            	});
+
+            	$scope.onChange = function() {
+            		if($scope.change) {
+            			$scope.$parent.$eval($scope.change);
             		}
             	}
             }
@@ -2793,11 +2832,31 @@ Date.CultureInfo = {
 
 })();
 
+(function () {
+
+    angular.module('fs-angular-datetime')
+	.provider("fsDatetime",function() {
+
+		this.$get = function() {
+
+			var service = {
+				parse: parse
+			 };
+
+			return service;
+
+			function parse(value) {
+				return Date.parse(value);
+			}
+		}
+	});
+})();
+
 angular.module('fs-angular-datetime').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
+    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\" class=\"{{class}}\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-change=\"inputChange()\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-blur=\"inputBlur($event)\" ng-focus=\"inputFocus()\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\"></md-input-container><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 
@@ -2807,7 +2866,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
 
 
   $templateCache.put('views/directives/datetimerange.html',
-    "<div layout=\"row\"><fs-datetime fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"fromSelect()\" fs-required=\"required\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled=\"disabled\" fs-date-select=\"toSelect()\" fs-required=\"required\"></fs-datetime></div>"
+    "<div layout=\"row\"><fs-datetime fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime></div>"
   );
 
 }]);
