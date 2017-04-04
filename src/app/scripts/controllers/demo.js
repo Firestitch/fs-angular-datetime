@@ -6,7 +6,9 @@
 
 
     $scope.text = '';
-    $scope.disabled = [ [moment(),moment().add(7,'day')] ];
+    $scope.disabledDays = [ [moment(),moment().add(7,'day')] ];
+    $scope.disabledHours = [ [0,13],20 ];
+    $scope.disabledMinutes = [ [0,33],45 ];
 
     $scope.submit = function() {
         alert('submit');

@@ -68,7 +68,7 @@
 						<div class="lbl">Hour</div>
 						<table>
 							<tr ng-repeat="hours in timeHours">
-								<td ng-repeat="hour in hours" class="hour" ng-click="hourClick(hour)" ng-class="{ selected: hour==selectedHour }">
+								<td ng-repeat="hour in hours" class="hour" ng-click="hourClick(hour)" ng-class="{ disabled: disabledTimeHours[hour], selected: hour==selectedHour }">
 									<div class="number">
 										<span ng-if="hour<12">{{hour ? hour : 12}}<span class="am-pm">am</span></span>
 										<span ng-if="hour>=12">{{hour==12 ? 12 : hour-12}}<span class="am-pm">pm</span></span>
@@ -81,7 +81,7 @@
 						<div class="lbl">Minute</div>
 						<table>
 							<tr ng-repeat="minutes in timeMinutes">
-								<td ng-repeat="minute in minutes" class="minute" ng-class="{ selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
+								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disabled: disabledTimeMinutes[minute], selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
 									<div class="number">
 										{{minute}}
 									</div>

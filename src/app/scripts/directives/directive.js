@@ -16,6 +16,8 @@
                hasRange: '=?fsRange',
                disabled: '=?fsDisabled',
                disabledDays: '=?fsDisabledDays',
+               disabledHours: '=?fsDisabledHours',
+               disabledMinutes: '=?fsDisabledMinutes',
                change: '@fsChange',
                required: '=?fsRequired',
                class: '@fsClass'
@@ -66,6 +68,40 @@
             		}
             	});
 
+            	$scope.$watch('disabledHours',function(ranges) {
+            		$scope.disabledTimeHours = {};
+            		if(ranges!==undefined) {
+            			angular.forEach(ranges,function(range) {
+            				var min = Math.min(range[0],range[1]);
+            				var max = Math.max(range[0],range[1]);
+            				if(fsUtil.isArray(range)) {
+        						for(var i=min;i<=max;i++) {
+        							$scope.disabledTimeHours[i] = true;
+        						}
+            				} else {
+            					$scope.disabledTimeHours[range] = true;
+            				}
+            			});
+            		}
+            	});
+
+            	$scope.$watch('disabledMinutes',function(ranges) {
+            		$scope.disabledTimeMinutes = {};
+            		if(ranges!==undefined) {
+            			angular.forEach(ranges,function(range) {
+            				var min = Math.min(range[0],range[1]);
+            				var max = Math.max(range[0],range[1]);
+            				if(fsUtil.isArray(range)) {
+            					for(var i=min;i<=max;i++) {
+            						$scope.disabledTimeMinutes[i] = true;
+            					}
+            				} else {
+            					$scope.disabledTimeMinutes[range] = true;
+            				}
+            			});
+            		}
+            	});
+
             	var disableWatch = false;
             	$scope.$watch('model',function(value,ovalue) {
 
@@ -101,9 +137,7 @@
 	            			$scope.inputLength = $scope.input.length;
 	            		}
 
-		        		//if(!odate || !date.isSame(odate.clone().startOf('month').subtract($scope.depth/2,'months'))) {
-		            		drawMonths(value);
-		            	//}
+		        		drawMonths(value);
 
 		            	var year = parseInt(value.format('YYYY'));
 		            	if(parseInt($scope.selectedYear)!=year) {
@@ -323,6 +357,10 @@
 
             	$scope.minuteClick = function(minute) {
 
+            		if($scope.disabledTimeMinutes[minute]) {
+            			return;
+            		}
+
             		if(!$scope.model) {
             			createModel();
             		}
@@ -332,6 +370,10 @@
             	}
 
             	$scope.hourClick = function(hour) {
+
+            		if($scope.disabledTimeHours[hour]) {
+            			return;
+            		}
 
             		if(!$scope.model) {
             			createModel();
@@ -611,7 +653,7 @@
             		}
             	});
             },
-            controller: function($scope) {
+            controller: function($scope,fsUtil) {
 
             	$scope.$watch('from',function() {
             		$scope.toDisabledDays = $scope.from ? [[moment().subtract(99,'year'),$scope.from.clone()]] : [];
@@ -619,6 +661,20 @@
 
             	$scope.$watch('to',function() {
             		$scope.fromDisabledDays = $scope.to ? [[$scope.to.clone().add(1,'day'),moment().add(99,'year')]] : [];
+            	});
+
+            	$scope.$watchGroup(['from','to'],function() {
+            		$scope.toDisabledHours = [];
+            		$scope.fromDisabledHours = [];
+            		$scope.toDisabledMinutes = [];
+            		$scope.fromDisabledMinutes = [];
+
+            		if($scope.from && $scope.to && $scope.from.isSame($scope.to, 'day')) {
+            			$scope.toDisabledHours.push([0,fsUtil.int($scope.from.format('H')) - 1]);
+            			$scope.fromDisabledHours.push([fsUtil.int($scope.to.format('H')) + 1,60]);
+            			$scope.toDisabledMinutes.push([0,fsUtil.int($scope.from.format('m')) - 1]);
+            			$scope.fromDisabledMinutes.push([fsUtil.int($scope.to.format('m')) + 1,60]);
+            		}
             	});
 
             	$scope.onChange = function() {

@@ -101,7 +101,7 @@ fs-datetime.has-time .md-input {
 }
 
 .fs-datetime-dialog .month-year {
-	height: 45px;
+	height: 40px;
 	font-size: 17px;
 	padding-left: 15px;
 	border: 1px solid #efefef;
@@ -176,12 +176,6 @@ fs-datetime.has-time .md-input {
 	color: #d7d7d7;
 }
 
-.fs-datetime-dialog .day.disabled {
-	color: #a6a5a5;
-	cursor: initial;
-	background: #efefef;
-}
-
 .fs-datetime-dialog thead {
 	position: absolute;
 	top: 0;
@@ -219,8 +213,8 @@ fs-datetime .lbl {
 	width: 100%;
 }
 
-.fs-datetime-dialog .time .hour:not(.disabled),
-.fs-datetime-dialog .time .minute:not(.disabled) {
+.fs-datetime-dialog .time .hour,
+.fs-datetime-dialog .time .minute{
     width: 31px;
     height: 31px;
     text-align: center;
@@ -231,14 +225,14 @@ fs-datetime .lbl {
 
 .fs-datetime-dialog .time .hour .number,
 .fs-datetime-dialog .time .minute .number {
-    /*border: 1px solid transparent;*/
-	/*border-radius: 50%;*/
+    border: 1px solid transparent;
+	border-radius: 50%;
     line-height: 28px;
     height: 28px;
 }
 
 .fs-datetime-dialog .time .hour .number {
-	/*font-size: 12px;*/
+	font-size: 12px;
 }
 
 .fs-datetime-dialog .time .hour:hover:not(.disabled),
@@ -246,8 +240,8 @@ fs-datetime .lbl {
     background: rgba(70,120,174,.15);
 }
 
-.fs-datetime-dialog .time .hour.selected:not(.disabled),
-.fs-datetime-dialog .time .minute.selected:not(.disabled) {
+.fs-datetime-dialog .time .hour.selected,
+.fs-datetime-dialog .time .minute.selected {
     background: #4678AE;
     color: #fff;
 }
@@ -261,8 +255,12 @@ fs-datetime .lbl {
 	width: 100%;
 }
 
-.fs-datetime-dialog .time .minute.disabled {
-    background: #efefef;
+.fs-datetime-dialog .time .hour.disabled,
+.fs-datetime-dialog .time .minute.disabled,
+.fs-datetime-dialog .day.disabled {
+	color: #a6a5a5;
+	cursor: initial;
+	background: #efefef;
 }
 
 .fs-datetime-dialog .time .lbl {
@@ -306,6 +304,3 @@ fs-datetime-range.md-no-label .to {
 	padding-top: 8px;
 }
 
-fs-datetime-range.md-no-message:not(.md-no-label) .to {
-	padding-top: 26px;
-}
