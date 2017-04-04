@@ -54,7 +54,7 @@ fs-datetime.has-time .md-input {
 }
 
 .fs-datetime-dialog.has-calendar .date-time {
-	height: 365px;
+	height: 360px;
 }
 
 .fs-datetime-dialog.has-time.has-date .date-time,
