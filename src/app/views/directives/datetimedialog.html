@@ -18,7 +18,7 @@
 						<tr>
 							<td colspan="7" class="month-year">
 								<div layout="row">
-									<md-select ng-model="month.number" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthChange(month.number)">
+									<md-select ng-init="month.selectedMonth=month.number" ng-model="month.selectedMonth" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthChange(month)">
 		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
 		                            </md-select>
 

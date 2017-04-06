@@ -28,7 +28,7 @@
             	$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
             	$scope.opened = false;
             	$scope.input = '';
-            	$scope.depth = 6;
+            	$scope.monthPadding = 2;
             	$scope.name = fsUtil.guid();
             	$scope.monthList = [{ value: 1, name: 'January' },
             						{ value: 2, name: 'February' },
@@ -138,6 +138,7 @@
 	            		}
 
 		        		drawMonths(value);
+	        			showMonth(value);
 
 		            	var year = parseInt(value.format('YYYY'));
 		            	if(parseInt($scope.selectedYear)!=year) {
@@ -147,7 +148,6 @@
 	            			}
 	            		}
 
-	            		showMonth(value);
 	            		$scope.selectedDate = value.format('YYYY-MM-DD');
 	            		$scope.selectedHour = value.format('H');
 	            		$scope.selectedMinute = value.format('m');
@@ -177,7 +177,6 @@
             		var date = fsDatetime.parse($scope.input);
             		if(date) {
             			$scope.model = moment(date);
-
 
             			if($scope.defaultTime) {
             				if(!parseInt($scope.model.format('H')) && !parseInt($scope.model.format('m'))) {
@@ -236,6 +235,9 @@
 
             	$scope.inputClick = function(e) {
 
+            		$scope.open();
+           			showMonth($scope.model);
+
             		var input = e.target;
             		var pos = null;
             		if ('selectionStart' in input) {
@@ -289,15 +291,6 @@
             	}
 
             	$scope.close = function(e) {
-/*
-            		var s = document.querySelectorAll( ":hover" );
-
-            		debugger;
-
-            		if(e) {
-            			debugger;
-            		}
-*/
 					$scope.opened = false;
             	}
 
@@ -351,8 +344,10 @@
             			createModel();
             		}
 
-            		setDate($scope.model.clone().month(month - 1));
+            		setDate($scope.model.clone().month(month.selectedMonth - 1));
             		change();
+
+            		month.selectedMonth = month.number;
             	}
 
             	$scope.minuteClick = function(minute) {
@@ -466,15 +461,22 @@
 
             	function drawMonths(date) {
 
-            		if(queryMonth(date)) {
-            			return;
+            		//If the month dom exists then don't redraw the months
+            		if(date) {
+
+            			if(queryMonth(date.clone().subtract(1,'month')) && queryMonth(date.clone().add(1,'month'))) {
+            				//console.log('skip drawMonths()');
+            				return;
+            			}
             		}
 
+            		console.log('drawMonths()');
+
             		var date = date ? date : createMoment();
-            		var month = date.clone().startOf('month').subtract($scope.depth/2,'months');
+            		var month = date.clone().startOf('month').subtract($scope.monthPadding,'months');
 
 	        		$scope.months = [];
-	        		for(var i=0;i<=$scope.depth;i++) {
+	        		for(var i=0;i<=$scope.monthPadding * 2;i++) {
 	        			$scope.months.push(createMonth(month));
 	        			month.add(1,'month');
 	        		}
@@ -487,10 +489,12 @@
 	        			var d = d ? d : createMoment();
 	        			var month = queryMonth(d);
 
+	        			//console.log('showMonth()');
+
 	               		if(month) {
 	               			service.$date.scrollTop = month.offsetTop - 52;
 	               		}
-	               	},date));
+	               	},date),50);
             	}
 
             	function queryMonth(date) {
