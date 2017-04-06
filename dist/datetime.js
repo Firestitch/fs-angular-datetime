@@ -2650,12 +2650,9 @@ Date.CultureInfo = {
             		if(date) {
 
             			if(queryMonth(date.clone().subtract(1,'month')) && queryMonth(date.clone().add(1,'month'))) {
-            				//console.log('skip drawMonths()');
             				return;
             			}
             		}
-
-            		console.log('drawMonths()');
 
             		var date = date ? date : createMoment();
             		var month = date.clone().startOf('month').subtract($scope.monthPadding,'months');
@@ -2673,8 +2670,6 @@ Date.CultureInfo = {
 
 	        			var d = d ? d : createMoment();
 	        			var month = queryMonth(d);
-
-	        			//console.log('showMonth()');
 
 	               		if(month) {
 	               			service.$date.scrollTop = month.offsetTop - 52;
