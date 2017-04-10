@@ -14,23 +14,23 @@
 							<th>Sat</th>
 						</tr>
 					</thead>
-					<tbody class="calendar calendar-{{month.time}}" ng-repeat="month in months" data-time="{{month.time}}">
+					<tbody class="calendar calendar-{{::month.date}}" ng-repeat="month in months track by month.date">
 						<tr>
 							<td colspan="7" class="month-year">
 								<div layout="row">
 									<md-select ng-init="month.selectedMonth=month.number" ng-model="month.selectedMonth" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthChange(month)">
-		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{item.name}}</md-option>
+		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{::item.name}}</md-option>
 		                            </md-select>
 
 		                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearChange(month.year)">
-		                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{item}}</md-option>
+		                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{::item}}</md-option>
 		                            </md-select>
 		                        </div>
 							</td>
 						</tr>
 						<tr class="week" ng-repeat="week in month.weeks">
-							<td ng-repeat="day in week" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }" ng-click="dayClick(day)">
-								<span>{{day.number}}</span>
+							<td ng-repeat="day in week track by day.number" class="day" ng-class="{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }" ng-click="dayClick(day)">
+								<span>{{::day.number}}</span>
 							</td>
 						</tr>
 					</tbody>
@@ -40,21 +40,21 @@
 					<div flex="33">
 						<md-input-container class="md-block md-no-message md-no-label">
 							<md-select placeholder="Month" ng-model="selectedMonth" aria-label="Month" ng-change="monthChange(selectedMonth)">
-	                          	<md-option ng-repeat="item in monthList track by item.value" ng-value="item.value">{{item.name}}</md-option>
+	                          	<md-option ng-repeat="item in monthList track by item.value" ng-value="item.value">{{::item.name}}</md-option>
 	                        </md-select>
 						</md-input-container>
 					</div>
 					<div flex="33">
 						<md-input-container class="md-block md-no-message md-no-label">
 							<md-select placeholder="Day" ng-model="selectedDay" aria-label="Day" ng-change="dayChange(selectedDay)">
-	                          	<md-option ng-repeat="(key,value) in [] | fsDatetimeDayRange:selectedMonth:selectedYear" ng-value="value">{{value}}</md-option>
+	                          	<md-option ng-repeat="(key,value) in [] | fsDatetimeDayRange:selectedMonth:selectedYear" ng-value="value">{{::value}}</md-option>
 	                        </md-select>
 						</md-input-container>
 					</div>
 					<div flex="33">
 						<md-input-container class="md-block md-no-message md-no-label">
 							<md-select placeholder="Year" ng-model="selectedYear" aria-label="Year" ng-change="yearChange(selectedYear)">
-	                            <md-option ng-repeat="item in [] | fsDatetimeYearRange" ng-value="item">{{item}}</md-option>
+	                            <md-option ng-repeat="item in [] | fsDatetimeYearRange" ng-value="item">{{::item}}</md-option>
 	                        </md-select>
 						</md-input-container>
 					</div>
@@ -83,7 +83,7 @@
 							<tr ng-repeat="minutes in timeMinutes">
 								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disabled: disabledTimeMinutes[minute], selected: minute==selectedMinute }" ng-click="minuteClick(minute)">
 									<div class="number">
-										{{minute}}
+										{{::minute}}
 									</div>
 								</td>
 							</tr>

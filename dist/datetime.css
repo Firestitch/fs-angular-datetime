@@ -189,6 +189,7 @@ fs-datetime.has-time .md-input {
 	border: 1px solid transparent;
 	background: #fff;
 	border-bottom: 1px solid #efefef;
+	border-top: 1px solid #fff;
 }
 
 .fs-datetime-dialog thead th,
