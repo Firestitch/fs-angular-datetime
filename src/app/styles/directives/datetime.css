@@ -108,8 +108,8 @@ fs-datetime.has-time .md-input {
 	border-left: none;
 }
 
-.fs-datetime-dialog .year,
-.fs-datetime-dialog .month {
+.fs-datetime-dialog .year-name,
+.fs-datetime-dialog .month-name {
     margin: 0;
     color: inherit;
     font-size: inherit;
@@ -167,10 +167,15 @@ fs-datetime.has-time .md-input {
 	background: rgba(70,120,174,.15);
 }
 
-.fs-datetime-dialog .day.selected {
-	background: #4678AE;
+.fs-datetime-dialog .day.selected,
+.fs-datetime-dialog .years .year.selected,
+.fs-datetime-dialog .months td.selected,
+.fs-datetime-dialog .time .hour.selected,
+.fs-datetime-dialog .time .minute.selected {
+    background: #4678AE;
 	color: #fff;
 }
+
 
 .fs-datetime-dialog .day.mute {
 	color: #d7d7d7;
@@ -241,12 +246,6 @@ fs-datetime .lbl {
     background: rgba(70,120,174,.15);
 }
 
-.fs-datetime-dialog .time .hour.selected,
-.fs-datetime-dialog .time .minute.selected {
-    background: #4678AE;
-    color: #fff;
-}
-
 .fs-datetime-dialog .time .minutes {
 	margin-left: 15px;
 }
@@ -296,10 +295,41 @@ fs-datetime .lbl {
 	font-size: 11px;
 }
 
-fs-datetime-range .to {
-	padding: 0 7px;
-	padding-top: 26px;
+.fs-datetime-dialog .months table {
+	width: 100%;
+	overflow: hidden;
 }
+
+.fs-datetime-dialog .months td {
+	width: 33.3333%;
+	text-align: center;
+	line-height: 87px;
+	border-collapse: collapse;
+	border: 1px solid #efefef;
+	cursor: pointer;
+    outline: none;
+}
+
+.fs-datetime-dialog .months tr:first-child td {
+	border-top: none;
+}
+
+.fs-datetime-dialog .years .year {
+	float: left;
+    width: 25%;
+    text-align: center;
+    height: 65px;
+    border-left: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
+    line-height: 65px;
+    cursor: pointer;
+}
+
+.fs-datetime-dialog .years .year.row {
+	clear: both;
+	margin-left: -4px;
+}
+
 
 fs-datetime-range.md-no-label .to {
 	padding-top: 8px;

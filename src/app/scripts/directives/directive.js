@@ -18,6 +18,7 @@
                disabledDays: '=?fsDisabledDays',
                disabledHours: '=?fsDisabledHours',
                disabledMinutes: '=?fsDisabledMinutes',
+               view: '@fsView',
                change: '@fsChange',
                required: '=?fsRequired',
                class: '@fsClass'
@@ -26,8 +27,14 @@
             	var isFirefox = fsBrowser.firefox();
             	var monthPadding = 3;
 
+            	$scope.view = $scope.view || 'calendar';
             	$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
             	$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
+
+            	if(!$scope.hasCalendar) {
+            		$scope.view = 'date';
+            	}
+
             	$scope.opened = false;
             	$scope.input = '';
             	$scope.name = fsUtil.guid();
@@ -152,11 +159,11 @@
 	            		}
 
 	            		$scope.selectedDate = value.format('YYYY-MM-DD');
-	            		$scope.selectedHour = value.format('H');
-	            		$scope.selectedMinute = value.format('m');
-	            		$scope.selectedYear = value.format('YYYY');
-	            		$scope.selectedMonth = value.format('M');
-	            		$scope.selectedDay = value.format('D');
+	            		$scope.selectedHour = parseInt(value.format('H'));
+	            		$scope.selectedMinute = parseInt(value.format('m'));
+	            		$scope.selectedYear = parseInt(value.format('YYYY'));
+	            		$scope.selectedMonth = parseInt(value.format('M'));
+	            		$scope.selectedDay = parseInt(value.format('D'));
 
 	            	} else {
             			$scope.input = '';
@@ -230,6 +237,18 @@
             		if(e.keyCode == 13) {
             			$scope.inputBlur(e);
             		}
+            	}
+
+            	$scope.calendarView = function() {
+            		$scope.view = 'calendar';
+            	}
+
+            	$scope.monthView = function() {
+            		$scope.view = 'month';
+            	}
+
+            	$scope.yearView = function() {
+            		$scope.view = 'year';
             	}
 
             	$scope.open = function() {
@@ -347,18 +366,22 @@
 
             	$scope.monthChange = function(month) {
 
-            		if(month.selectedMonth==month.number) {
-            			return;
-            		}
-
             		if(!$scope.model) {
             			createModel();
             		}
 
-            		setDate($scope.model.clone().month(month.selectedMonth - 1));
+            		setDate($scope.model.clone().month(month - 1));
             		change();
+            	}
 
-            		month.selectedMonth = month.number;
+            	$scope.yearViewChange = function(year) {
+            		$scope.yearChange(year);
+            		$scope.calendarView();
+            	}
+
+            	$scope.monthViewChange = function(month) {
+            		$scope.monthChange(month);
+            		$scope.calendarView();
             	}
 
             	$scope.minuteClick = function(minute) {

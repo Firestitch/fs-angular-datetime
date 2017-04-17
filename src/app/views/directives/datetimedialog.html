@@ -2,7 +2,36 @@
 	<div class="wrap">
 		<div layout="row" class="date-time">
 			<div class="date" ng-show="hasDate" flex>
-				<table ng-show="hasCalendar" class="calendar">
+				<div class="months" ng-if="view=='month'">
+					<table>
+						<tr>
+							<td ng-click="monthViewChange(1)" ng-class="{ selected: selectedMonth==1 }">Jan</td>
+							<td ng-click="monthViewChange(2)" ng-class="{ selected: selectedMonth==2 }">Feb</td>
+							<td ng-click="monthViewChange(3)" ng-class="{ selected: selectedMonth==3 }">Mar</td>
+						</tr>
+						<tr>
+							<td ng-click="monthViewChange(4)" ng-class="{ selected: selectedMonth==4 }">Apr</td>
+							<td ng-click="monthViewChange(5)" ng-class="{ selected: selectedMonth==5 }">May</td>
+							<td ng-click="monthViewChange(6)" ng-class="{ selected: selectedMonth==6 }">Jun</td>
+						</tr>
+						<tr>
+							<td ng-click="monthViewChange(7)" ng-class="{ selected: selectedMonth==7 }">Jul</td>
+							<td ng-click="monthViewChange(8)" ng-class="{ selected: selectedMonth==8 }">Aug</td>
+							<td ng-click="monthViewChange(9)" ng-class="{ selected: selectedMonth==9 }">Sept</td>
+						</tr>
+						<tr>
+							<td ng-click="monthViewChange(10)" ng-class="{ selected: selectedMonth==10 }">Oct</td>
+							<td ng-click="monthViewChange(11)" ng-class="{ selected: selectedMonth==11 }">Nov</td>
+							<td ng-click="monthViewChange(12)" ng-class="{ selected: selectedMonth==12 }">Dec</td>
+						</tr>
+					</table>
+				</div>
+				<div class="years" ng-if="view=='year'">
+					<div ng-repeat="year in [] | fsDatetimeYearRange" class="year" ng-class="{ row : ($index % 4 == 0), selected: selectedYear==year }" ng-click="yearViewChange(year)">
+					    {{::year}}
+					</div>
+				</div>
+				<table ng-show="hasCalendar" class="calendar" ng-if="view=='calendar'">
 					<thead>
 						<tr>
 							<th>Sun</th>
@@ -18,13 +47,8 @@
 						<tr>
 							<td colspan="7" class="month-year">
 								<div layout="row">
-									<md-select ng-init="month.selectedMonth=month.number" ng-model="month.selectedMonth" ng-click="monthClick(month)" class="month" aria-label="Month" ng-change="monthChange(month)">
-		                              	<md-option ng-repeat="item in month.months track by item.value" ng-value="item.value">{{::item.name}}</md-option>
-		                            </md-select>
-
-		                            <md-select ng-model="month.year" ng-click="yearClick(month)" class="year" aria-label="Year" ng-change="yearChange(month.year)">
-		                                <md-option ng-repeat="item in month.years track by item" ng-value="item">{{::item}}</md-option>
-		                            </md-select>
+									<a href class="month-name" ng-click="monthView()">{{month.name}}</a>
+									<a href class="year-name" ng-click="yearView()">{{month.year}}</a>
 		                        </div>
 							</td>
 						</tr>
@@ -36,10 +60,10 @@
 					</tbody>
 				</table>
 
-				<div ng-if="!hasCalendar" layout="row" class="inline-date">
+				<div ng-if="view=='date'" layout="row" class="inline-date">
 					<div flex="33">
 						<md-input-container class="md-block md-no-message md-no-label">
-							<md-select placeholder="Month" ng-model="selectedMonth" aria-label="Month" ng-change="monthChange(selectedMonth)">
+							<md-select placeholder="Month" ng-model="selectedMonth" aria-label="Month" ng-change="monthChange(month.number)">
 	                          	<md-option ng-repeat="item in monthList track by item.value" ng-value="item.value">{{::item.name}}</md-option>
 	                        </md-select>
 						</md-input-container>

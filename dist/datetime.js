@@ -2203,6 +2203,7 @@ Date.CultureInfo = {
                disabledDays: '=?fsDisabledDays',
                disabledHours: '=?fsDisabledHours',
                disabledMinutes: '=?fsDisabledMinutes',
+               view: '@fsView',
                change: '@fsChange',
                required: '=?fsRequired',
                class: '@fsClass'
@@ -2211,8 +2212,14 @@ Date.CultureInfo = {
             	var isFirefox = fsBrowser.firefox();
             	var monthPadding = 3;
 
+            	$scope.view = $scope.view || 'calendar';
             	$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
             	$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
+
+            	if(!$scope.hasCalendar) {
+            		$scope.view = 'date';
+            	}
+
             	$scope.opened = false;
             	$scope.input = '';
             	$scope.name = fsUtil.guid();
@@ -2337,11 +2344,11 @@ Date.CultureInfo = {
 	            		}
 
 	            		$scope.selectedDate = value.format('YYYY-MM-DD');
-	            		$scope.selectedHour = value.format('H');
-	            		$scope.selectedMinute = value.format('m');
-	            		$scope.selectedYear = value.format('YYYY');
-	            		$scope.selectedMonth = value.format('M');
-	            		$scope.selectedDay = value.format('D');
+	            		$scope.selectedHour = parseInt(value.format('H'));
+	            		$scope.selectedMinute = parseInt(value.format('m'));
+	            		$scope.selectedYear = parseInt(value.format('YYYY'));
+	            		$scope.selectedMonth = parseInt(value.format('M'));
+	            		$scope.selectedDay = parseInt(value.format('D'));
 
 	            	} else {
             			$scope.input = '';
@@ -2415,6 +2422,18 @@ Date.CultureInfo = {
             		if(e.keyCode == 13) {
             			$scope.inputBlur(e);
             		}
+            	}
+
+            	$scope.calendarView = function() {
+            		$scope.view = 'calendar';
+            	}
+
+            	$scope.monthView = function() {
+            		$scope.view = 'month';
+            	}
+
+            	$scope.yearView = function() {
+            		$scope.view = 'year';
             	}
 
             	$scope.open = function() {
@@ -2532,18 +2551,22 @@ Date.CultureInfo = {
 
             	$scope.monthChange = function(month) {
 
-            		if(month.selectedMonth==month.number) {
-            			return;
-            		}
-
             		if(!$scope.model) {
             			createModel();
             		}
 
-            		setDate($scope.model.clone().month(month.selectedMonth - 1));
+            		setDate($scope.model.clone().month(month - 1));
             		change();
+            	}
 
-            		month.selectedMonth = month.number;
+            	$scope.yearViewChange = function(year) {
+            		$scope.yearChange(year);
+            		$scope.calendarView();
+            	}
+
+            	$scope.monthViewChange = function(month) {
+            		$scope.monthChange(month);
+            		$scope.calendarView();
             	}
 
             	$scope.minuteClick = function(minute) {
@@ -2989,7 +3012,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
 
 
   $templateCache.put('views/directives/datetimedialog.html',
-    "<div class=\"fs-datetime-dialog\" tabindex=\"0\" ng-class=\"{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar }\"><div class=\"wrap\"><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\" flex><table ng-show=\"hasCalendar\" class=\"calendar\"><thead><tr><th>Sun</th><th>Mon</th><th>Tues</th><th>Wed</th><th>Thurs</th><th>Fri</th><th>Sat</th></tr></thead><tbody class=\"calendar calendar-{{::month.date}}\" ng-repeat=\"month in months track by month.date\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><md-select ng-init=\"month.selectedMonth=month.number\" ng-model=\"month.selectedMonth\" ng-click=\"monthClick(month)\" class=\"month\" aria-label=\"Month\" ng-change=\"monthChange(month)\"><md-option ng-repeat=\"item in month.months track by item.value\" ng-value=\"item.value\">{{::item.name}}</md-option></md-select><md-select ng-model=\"month.year\" ng-click=\"yearClick(month)\" class=\"year\" aria-label=\"Year\" ng-change=\"yearChange(month.year)\"><md-option ng-repeat=\"item in month.years track by item\" ng-value=\"item\">{{::item}}</md-option></md-select></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week track by day.number\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }\" ng-click=\"dayClick(day)\"><span>{{::day.number}}</span></td></tr></tbody></table><div ng-if=\"!hasCalendar\" layout=\"row\" class=\"inline-date\"><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Month\" ng-model=\"selectedMonth\" aria-label=\"Month\" ng-change=\"monthChange(selectedMonth)\"><md-option ng-repeat=\"item in monthList track by item.value\" ng-value=\"item.value\">{{::item.name}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Day\" ng-model=\"selectedDay\" aria-label=\"Day\" ng-change=\"dayChange(selectedDay)\"><md-option ng-repeat=\"(key,value) in [] | fsDatetimeDayRange:selectedMonth:selectedYear\" ng-value=\"value\">{{::value}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Year\" ng-model=\"selectedYear\" aria-label=\"Year\" ng-change=\"yearChange(selectedYear)\"><md-option ng-repeat=\"item in [] | fsDatetimeYearRange\" ng-value=\"item\">{{::item}}</md-option></md-select></md-input-container></div></div></div><div class=\"time\" ng-show=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ disabled: disabledTimeHours[hour], selected: hour==selectedHour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ disabled: disabledTimeMinutes[minute], selected: minute==selectedMinute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{::minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-show=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
+    "<div class=\"fs-datetime-dialog\" tabindex=\"0\" ng-class=\"{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar }\"><div class=\"wrap\"><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\" flex><div class=\"months\" ng-if=\"view=='month'\"><table><tr><td ng-click=\"monthViewChange(1)\" ng-class=\"{ selected: selectedMonth==1 }\">Jan</td><td ng-click=\"monthViewChange(2)\" ng-class=\"{ selected: selectedMonth==2 }\">Feb</td><td ng-click=\"monthViewChange(3)\" ng-class=\"{ selected: selectedMonth==3 }\">Mar</td></tr><tr><td ng-click=\"monthViewChange(4)\" ng-class=\"{ selected: selectedMonth==4 }\">Apr</td><td ng-click=\"monthViewChange(5)\" ng-class=\"{ selected: selectedMonth==5 }\">May</td><td ng-click=\"monthViewChange(6)\" ng-class=\"{ selected: selectedMonth==6 }\">Jun</td></tr><tr><td ng-click=\"monthViewChange(7)\" ng-class=\"{ selected: selectedMonth==7 }\">Jul</td><td ng-click=\"monthViewChange(8)\" ng-class=\"{ selected: selectedMonth==8 }\">Aug</td><td ng-click=\"monthViewChange(9)\" ng-class=\"{ selected: selectedMonth==9 }\">Sept</td></tr><tr><td ng-click=\"monthViewChange(10)\" ng-class=\"{ selected: selectedMonth==10 }\">Oct</td><td ng-click=\"monthViewChange(11)\" ng-class=\"{ selected: selectedMonth==11 }\">Nov</td><td ng-click=\"monthViewChange(12)\" ng-class=\"{ selected: selectedMonth==12 }\">Dec</td></tr></table></div><div class=\"years\" ng-if=\"view=='year'\"><div ng-repeat=\"year in [] | fsDatetimeYearRange\" class=\"year\" ng-class=\"{ row : ($index % 4 == 0), selected: selectedYear==year }\" ng-click=\"yearViewChange(year)\">{{::year}}</div></div><table ng-show=\"hasCalendar\" class=\"calendar\" ng-if=\"view=='calendar'\"><thead><tr><th>Sun</th><th>Mon</th><th>Tues</th><th>Wed</th><th>Thurs</th><th>Fri</th><th>Sat</th></tr></thead><tbody class=\"calendar calendar-{{::month.date}}\" ng-repeat=\"month in months track by month.date\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><a href class=\"month-name\" ng-click=\"monthView()\">{{month.name}}</a> <a href class=\"year-name\" ng-click=\"yearView()\">{{month.year}}</a></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week track by day.number\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selectedDate && !day.mute, disabled: day.disabled }\" ng-click=\"dayClick(day)\"><span>{{::day.number}}</span></td></tr></tbody></table><div ng-if=\"view=='date'\" layout=\"row\" class=\"inline-date\"><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Month\" ng-model=\"selectedMonth\" aria-label=\"Month\" ng-change=\"monthChange(month.number)\"><md-option ng-repeat=\"item in monthList track by item.value\" ng-value=\"item.value\">{{::item.name}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Day\" ng-model=\"selectedDay\" aria-label=\"Day\" ng-change=\"dayChange(selectedDay)\"><md-option ng-repeat=\"(key,value) in [] | fsDatetimeDayRange:selectedMonth:selectedYear\" ng-value=\"value\">{{::value}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\"><md-select placeholder=\"Year\" ng-model=\"selectedYear\" aria-label=\"Year\" ng-change=\"yearChange(selectedYear)\"><md-option ng-repeat=\"item in [] | fsDatetimeYearRange\" ng-value=\"item\">{{::item}}</md-option></md-select></md-input-container></div></div></div><div class=\"time\" ng-show=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ disabled: disabledTimeHours[hour], selected: hour==selectedHour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ disabled: disabledTimeMinutes[minute], selected: minute==selectedMinute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{::minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-show=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
   );
 
 
