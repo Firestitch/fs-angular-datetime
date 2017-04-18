@@ -14,7 +14,7 @@
         alert('submit');
     }
 
-    $scope.model1 = moment();
+    $scope.model1 = null;
     $scope.model3 = new Date();
     $scope.model4 = Date.now();
 

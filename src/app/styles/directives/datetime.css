@@ -163,10 +163,6 @@ fs-datetime.has-time .md-input {
 	display: block;
 }
 
-.fs-datetime-dialog .day:hover {
-	background: rgba(70,120,174,.15);
-}
-
 .fs-datetime-dialog .day.selected,
 .fs-datetime-dialog .years .year.selected,
 .fs-datetime-dialog .months td.selected,
@@ -220,7 +216,7 @@ fs-datetime .lbl {
 }
 
 .fs-datetime-dialog .time .hour,
-.fs-datetime-dialog .time .minute{
+.fs-datetime-dialog .time .minute {
     width: 31px;
     height: 31px;
     text-align: center;
@@ -242,7 +238,10 @@ fs-datetime .lbl {
 }
 
 .fs-datetime-dialog .time .hour:hover:not(.disabled),
-.fs-datetime-dialog .time .minute:hover:not(.disabled) {
+.fs-datetime-dialog .time .minute:hover:not(.disabled),
+.fs-datetime-dialog .day:hover,
+.fs-datetime-dialog .years .year:hover,
+.fs-datetime-dialog .months td:hover {
     background: rgba(70,120,174,.15);
 }
 
@@ -322,6 +321,7 @@ fs-datetime .lbl {
     border-left: 1px solid #efefef;
     border-bottom: 1px solid #efefef;
     line-height: 65px;
+    outline: none;
     cursor: pointer;
 }
 
