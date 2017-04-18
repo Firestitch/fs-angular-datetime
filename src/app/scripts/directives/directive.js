@@ -21,11 +21,21 @@
                view: '@fsView',
                change: '@fsChange',
                required: '=?fsRequired',
-               class: '@fsClass'
+               class: '@fsClass',
+               minYear: '@fsMinYear',
+               maxYear: '@fsMaxYear'
             },
             controller: function($scope) {
             	var isFirefox = fsBrowser.firefox();
             	var monthPadding = 3;
+
+            	$scope.minYear = $scope.minYear || (parseInt(moment().format('YYYY')) - 100);
+            	$scope.maxYear = $scope.maxYear || (parseInt(moment().format('YYYY')) + 100);
+				$scope.years = [];
+
+				for(var y=$scope.maxYear;y>$scope.minYear;y--) {
+					$scope.years.push(y);
+				}
 
             	$scope.view = $scope.view || 'calendar';
             	$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
@@ -802,14 +812,32 @@
             }
        	}
     })
-	.filter('fsDatetimeYearRange', function() {
-	return function(years) {
-    	var year = parseInt(moment().format('YYYY'));
-		for(var y=year + 100;y>(year-100);y--) {
-			years.push(y);
-		}
+    .directive('fsDatetimeDate', function() {
+        return {
+            restrict: 'E',
+            template: '<fs-datetime fs-model="model" fs-label="{{label}}" fs-calendar="false"></fs-datetime>',
+            scope: {
+               model: '=fsModel',
+               label: '@?fsLabel'
+            },
+            controller: function($scope) {
 
-		return years;
-	}});
+            }
+        }
+    })
+	.directive('fsDatetimeBirthdate', function() {
+        return {
+            restrict: 'E',
+            template: '<fs-datetime fs-model="model" fs-label="{{label}}" fs-calendar="false" fs-min-year="{{minYear}}" fs-max-year="{{maxYear}}"></fs-datetime>',
+            scope: {
+               model: '=fsModel',
+               label: '@?fsLabel'
+            },
+            controller: function($scope) {
+          		$scope.minYear = parseInt(moment().format('YYYY')) - 100;
+            	$scope.maxYear = parseInt(moment().format('YYYY'));
+            }
+        }
+    });
 
 })();

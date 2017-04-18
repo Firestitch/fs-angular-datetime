@@ -27,7 +27,7 @@
 					</table>
 				</div>
 				<div class="years" ng-if="view=='year'">
-					<div ng-repeat="year in [] | fsDatetimeYearRange" class="year" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
+					<div ng-repeat="year in years" class="year" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
 					    {{::year}}
 					</div>
 				</div>
@@ -78,7 +78,7 @@
 					<div flex="33">
 						<md-input-container class="md-block md-no-message md-no-label" md-no-float="true">
 							<md-select placeholder="Year" ng-model="selected.year" aria-label="Year" ng-change="yearDateViewChange()">
-	                            <md-option ng-repeat="item in [] | fsDatetimeYearRange" ng-value="item">{{::item}}</md-option>
+	                            <md-option ng-repeat="item in years" ng-value="item">{{::item}}</md-option>
 	                        </md-select>
 						</md-input-container>
 					</div>
