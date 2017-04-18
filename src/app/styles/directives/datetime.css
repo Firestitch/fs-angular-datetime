@@ -329,7 +329,10 @@ fs-datetime .lbl {
 	clear: both;
 	margin-left: -4px;
 }
-
+fs-datetime-range .to {
+	padding: 0 4px;
+	padding-top: 26px;
+}
 
 fs-datetime-range.md-no-label .to {
 	padding-top: 8px;

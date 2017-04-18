@@ -2621,6 +2621,7 @@ Date.CultureInfo = {
 
             	function updateDate() {
 
+            		var m = moment([$scope.selected.year, $scope.selected.month - 1, $scope.selected.day]);
             		var max = new Date($scope.selected.year || 1904,$scope.selected.month, 0).getDate();
 
             		if(max<$scope.selected.day) {
