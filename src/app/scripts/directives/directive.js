@@ -18,6 +18,7 @@
                disabledDays: '=?fsDisabledDays',
                disabledHours: '=?fsDisabledHours',
                disabledMinutes: '=?fsDisabledMinutes',
+               disabledTimes: '=?fsDisabledTimes',
                view: '@fsView',
                change: '@fsChange',
                required: '=?fsRequired',
@@ -88,39 +89,82 @@
             		}
             	});
 
-            	$scope.$watch('disabledHours',function(ranges) {
+            	$scope.$watchGroup(['disabledMinutes','disabledHours','disabledTimes'],function(data) {
+            		$scope.disabledTimeMinutes = {};
             		$scope.disabledTimeHours = {};
-            		if(ranges!==undefined) {
-            			angular.forEach(ranges,function(range) {
+            		$scope.disabledGroupedMinutes = {};
+            		if(data[0]!==undefined) {
+            			angular.forEach(data[0],function(range) {
+            				addDisabledMinutes(range);
+            			});
+            		}
+
+            		if(data[1]!==undefined) {
+            			angular.forEach(data[1],function(range) {
+            				addDisabledHours(range);
+            			});
+            		}
+
+            		if(data[2]!==undefined) {
+            			angular.forEach(data[2],function(range) {
+
             				var min = Math.min(range[0],range[1]);
             				var max = Math.max(range[0],range[1]);
-            				if(fsUtil.isArray(range)) {
-        						for(var i=min;i<=max;i++) {
-        							$scope.disabledTimeHours[i] = true;
-        						}
-            				} else {
-            					$scope.disabledTimeHours[range] = true;
+            				var minMinutes = min % 60;
+            				var maxMinutes = max % 60;
+
+            				var minHour = Math.floor(min/60);
+            				var maxHour = Math.floor(max/60);
+
+							for(var h=0;h<=24;h++) {
+
+								$scope.disabledGroupedMinutes[h] = {};
+
+            					if(h>minHour && h<maxHour)  {
+            						addDisabledHours(h,h);
+            					} else if(h==minHour && !minMinutes) {
+            						addDisabledHours(h,h);
+            					}
+
+								if(h==minHour) {
+									for(var m=minMinutes;m<60;m++) {
+            							$scope.disabledGroupedMinutes[h][m] = true;
+            						}
+								}
+
+            					if(h==maxHour) {
+            						for(var m=0;m<maxMinutes;m++) {
+            							$scope.disabledGroupedMinutes[h][m] = true;
+            						}
+            					}
             				}
             			});
             		}
             	});
 
-            	$scope.$watch('disabledMinutes',function(ranges) {
-            		$scope.disabledTimeMinutes = {};
-            		if(ranges!==undefined) {
-            			angular.forEach(ranges,function(range) {
-            				var min = Math.min(range[0],range[1]);
-            				var max = Math.max(range[0],range[1]);
-            				if(fsUtil.isArray(range)) {
-            					for(var i=min;i<=max;i++) {
-            						$scope.disabledTimeMinutes[i] = true;
-            					}
-            				} else {
-            					$scope.disabledTimeMinutes[range] = true;
-            				}
-            			});
-            		}
-            	});
+            	function addDisabledMinutes(range) {
+					var min = Math.min(range[0],range[1]);
+					var max = Math.max(range[0],range[1]);
+					if(fsUtil.isArray(range)) {
+						for(var i=min;i<=max;i++) {
+							$scope.disabledTimeMinutes[i] = true;
+						}
+					} else {
+						$scope.disabledTimeMinutes[range] = true;
+					}
+            	}
+
+            	function addDisabledHours(range) {
+					var min = Math.min(range[0],range[1]);
+    				var max = Math.max(range[0],range[1]);
+    				if(fsUtil.isArray(range)) {
+						for(var i=min;i<=max;i++) {
+							$scope.disabledTimeHours[i] = true;
+						}
+    				} else {
+    					$scope.disabledTimeHours[range] = true;
+    				}
+            	}
 
             	var disableWatch = false;
             	$scope.$watch('model',function(value,ovalue) {
@@ -791,16 +835,21 @@
             	});
 
             	$scope.$watchGroup(['from','to'],function() {
-            		$scope.toDisabledHours = [];
-            		$scope.fromDisabledHours = [];
-            		$scope.toDisabledMinutes = [];
-            		$scope.fromDisabledMinutes = [];
+            		$scope.toDisabledTimes = [];
+            		$scope.fromDisabledTimes = [];
 
             		if($scope.from && $scope.to && $scope.from.isSame($scope.to, 'day')) {
-            			$scope.toDisabledHours.push([0,fsUtil.int($scope.from.format('H')) - 1]);
-            			$scope.fromDisabledHours.push([fsUtil.int($scope.to.format('H')) + 1,60]);
-            			$scope.toDisabledMinutes.push([0,fsUtil.int($scope.from.format('m')) - 1]);
-            			$scope.fromDisabledMinutes.push([fsUtil.int($scope.to.format('m')) + 1,60]);
+
+            			var from = fsUtil.int($scope.from.format('m')) + (fsUtil.int($scope.from.format('H'))*60);
+            			var to = fsUtil.int($scope.to.format('m')) + (fsUtil.int($scope.to.format('H'))*60);
+
+            			if(from) {
+            				$scope.toDisabledTimes.push([0,from]);
+            			}
+
+            			if(to) {
+            				$scope.fromDisabledTimes.push([to + 1,60*24]);
+            			}
             		}
             	});
 

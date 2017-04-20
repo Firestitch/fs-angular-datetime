@@ -101,10 +101,11 @@
 						</table>
 					</div>
 					<div class="minutes">
+
 						<div class="lbl">Minute</div>
 						<table>
 							<tr ng-repeat="minutes in timeMinutes">
-								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disabled: disabledTimeMinutes[minute], selected: minute==selected.minute }" ng-click="minuteClick(minute)">
+								<td ng-repeat="minute in minutes" class="minute" ng-class="{ disabled: disabledTimeMinutes[minute] || disabledGroupedMinutes[selected.hour][minute], selected: minute==selected.minute }" ng-click="minuteClick(minute)">
 									<div class="number">
 										{{::minute}}
 									</div>
