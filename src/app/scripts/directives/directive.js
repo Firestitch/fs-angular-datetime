@@ -877,9 +877,10 @@
 	.directive('fsDatetimeBirthdate', function() {
         return {
             restrict: 'E',
-            template: '<fs-datetime fs-model="model" fs-label="{{label}}" fs-calendar="false" fs-min-year="{{minYear}}" fs-max-year="{{maxYear}}"></fs-datetime>',
+            template: '<fs-datetime fs-model="model" fs-label="{{label}}" fs-required="required" fs-calendar="false" fs-min-year="{{minYear}}" fs-max-year="{{maxYear}}"></fs-datetime>',
             scope: {
                model: '=fsModel',
+			   required: '=?fsRequired',
                label: '@?fsLabel'
             },
             controller: function($scope) {
