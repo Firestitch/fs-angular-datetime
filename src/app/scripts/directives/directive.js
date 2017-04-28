@@ -182,7 +182,11 @@
            			if(fsUtil.isInt(value)) {
             			value = moment(new Date(value));
             		} else if(fsUtil.isString(value)) {
-            			value = moment(Date.parse(value));
+            			if(moment(value).isValid()) {
+            				value = moment(value);
+            			} else {
+	            			value = moment(Date.parse(value));
+	            		}
             		}
 
             		if(value && moment(value).isValid()) {
