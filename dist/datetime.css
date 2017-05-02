@@ -67,7 +67,7 @@ fs-datetime.has-time .md-input {
 }
 
 .fs-datetime-dialog.has-time:not(.has-date) .wrap {
-     width: auto;
+    width: 255px;
 }
 
 .fs-datetime-dialog:not(.vertical-reposition):not(.horizontal-reposition) .wrap:after,
@@ -181,6 +181,7 @@ fs-datetime.has-time .md-input {
 	position: absolute;
 	top: 0;
 	z-index: 50;
+	min-width: 400px; /* so the days dont get squished */
 }
 
 .fs-datetime-dialog thead th {
@@ -338,3 +339,14 @@ fs-datetime-range.md-no-label .to {
 	padding-top: 8px;
 }
 
+
+@media only screen and (max-width: 500px) {
+    .fs-datetime-dialog {
+    	left: 0 !important;
+    	right: 0 !important;
+    }
+
+    .fs-datetime-dialog .wrap {
+    	margin: auto;
+    }
+}
