@@ -833,32 +833,31 @@
 			},
 			controller: function($scope,fsUtil) {
 
-				$scope.$watch('from',function() {
-					$scope.toDisabledDays = $scope.from ? [[moment().subtract(99,'year'),$scope.from.clone()]] : [];
-				});
+            	$scope.$watch('from',function() {
+            		if($scope.from && $scope.to) {
+            			if($scope.to.isBefore($scope.from)) {
+            				$scope.to = null;
+            			}
+            		}
+            	});
 
-				$scope.$watch('to',function() {
-					$scope.fromDisabledDays = $scope.to ? [[$scope.to.clone().add(1,'day'),moment().add(99,'year')]] : [];
-				});
+            	$scope.$watch('from',function() {
+            		$scope.toDisabledDays = $scope.from ? [[moment().subtract(99,'year'),$scope.from.clone()]] : [];
+            	});
 
-				$scope.$watchGroup(['from','to'],function() {
-					$scope.toDisabledTimes = [];
-					$scope.fromDisabledTimes = [];
+            	$scope.$watchGroup(['from','to'],function() {
+            		$scope.toDisabledTimes = [];
 
-					if($scope.from && $scope.to && $scope.from.isSame($scope.to, 'day')) {
+            		if($scope.from && $scope.to && $scope.from.isSame($scope.to, 'day')) {
 
-						var from = fsUtil.int($scope.from.format('m')) + (fsUtil.int($scope.from.format('H'))*60);
-						var to = fsUtil.int($scope.to.format('m')) + (fsUtil.int($scope.to.format('H'))*60);
+            			var from = fsUtil.int($scope.from.format('m')) + (fsUtil.int($scope.from.format('H'))*60);
+            			var to = fsUtil.int($scope.to.format('m')) + (fsUtil.int($scope.to.format('H'))*60);
 
-						if(from) {
-							$scope.toDisabledTimes.push([0,from]);
-						}
-
-						if(to) {
-							$scope.fromDisabledTimes.push([to + 1,60*24]);
-						}
-					}
-				});
+            			if(from) {
+            				$scope.toDisabledTimes.push([0,from]);
+            			}
+            		}
+            	});
 
 				$scope.onChange = function() {
 					if($scope.change) {
