@@ -11,5 +11,6 @@
 			ng-required="required"
 			name="{{name}}"
 			aria-label="input" size="{{inputLength || 1}}" ng-disabled="disabled"/>
+	<div class="hint" ng-if="hint">{{hint}}</div>
 </md-input-container>
 <div class="backdrop ng-hide" ng-show="opened" ng-click="close($event)"></div>

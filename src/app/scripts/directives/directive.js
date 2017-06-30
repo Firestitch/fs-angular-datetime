@@ -24,7 +24,8 @@
 			   required: '=?fsRequired',
 			   class: '@fsClass',
 			   minYear: '@fsMinYear',
-			   maxYear: '@fsMaxYear'
+			   maxYear: '@fsMaxYear',
+               hint: '@fsHint'
 			},
 			controller: function($scope) {
 				var isFirefox = fsBrowser.firefox();
@@ -820,6 +821,7 @@
 			   hasDate: '=?fsDate',
 			   disabled: '=?fsDisabled',
 			   required: '=?fsRequired',
+               hint: '@fsHint',
 			   change: '@fsChange',
 			   class: '@fsClass'
 			},
