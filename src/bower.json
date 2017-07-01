@@ -13,6 +13,7 @@
     "fs-angular-modal": "^1.0.0",
     "fs-angular-util": "^1.0.0",
     "fs-angular-browser": "^1.0.0",
+    "fs-angular-validate": "^1.0.0",
     "moment": "2.10.6"
   },
   "resolutions": {

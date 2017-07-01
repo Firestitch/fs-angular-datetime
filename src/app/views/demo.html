@@ -1,10 +1,12 @@
+<form fs-validate="submit()">
+
 <div layout="row">
 	<div flex="50">
 
-		<fs-datetime-range fs-hint="Test hintTest hintTest hintTest hintTest hintTest hintTest hintTest hintTest hint" fs-from="from" fs-to="to" fs-to-label="End Date" fs-from-label="Start Date" fs-time="true"></fs-datetime-range>
+		<fs-datetime-range fs-hint="Test hintTest hintTest hintTest hintTest hintTest hintTest hintTest hintTest hint" fs-required="true" fs-from="from" fs-to="to" fs-to-label="End Date" fs-from-label="Start Date" fs-time="true"></fs-datetime-range>
 
 
-		<fs-datetime fs-model="model3" fs-label="Date/Time" fs-time="true" fs-hint="Test hint"></fs-datetime>
+		<fs-datetime fs-model="model3" fs-label="Date/Time" fs-time="true" fs-hint="Test hint" fs-required="true"></fs-datetime>
 
 
 <!--  		<fs-datetime fs-model="model1" fs-label="Date" fs-time="false" fs-calendar="false"></fs-datetime>
@@ -37,6 +39,8 @@
 	</div>
 </div>
 
+<md-button type="submit" class="md-primary md-raised">Submit</md-button>
+</form>
 
 
 

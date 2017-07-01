@@ -15,7 +15,7 @@
     }
 
     $scope.model1 = null;
-    $scope.model3 = new Date();
+    $scope.model3 = null;
     $scope.model4 = Date.now();
 
     $scope.modelUpdate = Date.now();

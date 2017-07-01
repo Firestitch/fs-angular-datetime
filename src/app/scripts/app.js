@@ -7,7 +7,8 @@ angular
     'ngMaterial',
     'fs-angular-datetime',
     'fs-angular-modal',
-    'fs-angular-util'
+    'fs-angular-util',
+    'fs-angular-validate'
 ])
 .config(function ($stateProvider, $urlRouterProvider) {
 

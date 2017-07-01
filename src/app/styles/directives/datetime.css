@@ -20,12 +20,10 @@ fs-datetime .hint {
 }
 
 fs-datetime-range .hint {
-	font-size: 12px;
-	line-height: 14px;
-	padding-left: 2px;
-	padding-top: 5px;
-	position: relative;
-	overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    overflow: visible;
+    top: 33px;
 }
 
 fs-datetime .md-input {
