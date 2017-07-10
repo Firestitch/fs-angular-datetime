@@ -861,6 +861,8 @@
             		}
             	});
 
+            	$scope.block = fsUtil.string($scope.class).indexOf('md-block')>=0;
+
 				$scope.onChange = function() {
 					if($scope.change) {
 						$scope.$parent.$eval($scope.change);

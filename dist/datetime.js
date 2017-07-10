@@ -3046,6 +3046,8 @@ Date.CultureInfo = {
             		}
             	});
 
+            	$scope.block = fsUtil.string($scope.class).indexOf('md-block')>=0;
+
 				$scope.onChange = function() {
 					if($scope.change) {
 						$scope.$parent.$eval($scope.change);
@@ -3142,7 +3144,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
 
 
   $templateCache.put('views/directives/datetimerange.html',
-    "<div layout=\"column\"><div layout=\"row\"><fs-datetime fs-hint=\"{{hint}}\" fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled-times=\"fromDisabledTimes\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime><div class=\"to\">to</div><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled-times=\"toDisabledTimes\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime></div></div>"
+    "<div layout=\"row\" class=\"datetime-row\" ng-class=\"{ 'datetime-block': block }\"><div class=\"datetime-from\"><fs-datetime fs-hint=\"{{hint}}\" fs-model=\"from\" fs-label=\"{{fromLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"fromDisabledDays\" fs-disabled-times=\"fromDisabledTimes\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime></div><div class=\"to\">to</div><div class=\"datetime-to\"><fs-datetime fs-model=\"to\" fs-label=\"{{toLabel}}\" fs-date=\"hasDate\" fs-time=\"hasTime\" fs-disabled-days=\"toDisabledDays\" fs-disabled-times=\"toDisabledTimes\" fs-disabled=\"disabled\" fs-required=\"required\" fs-change=\"onChange()\" fs-class=\"{{class}}\"></fs-datetime></div></div>"
   );
 
 }]);

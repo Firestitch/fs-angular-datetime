@@ -16,14 +16,15 @@ fs-datetime .backdrop {
 }
 
 fs-datetime .hint {
-	width: 100%;
-}
-
-fs-datetime-range .hint {
+    top: 33px;
+    left: 0;
     position: absolute;
     white-space: nowrap;
     overflow: visible;
-    top: 33px;
+}
+
+fs-datetime-range .hint {
+    clear: left;
 }
 
 fs-datetime .md-input {
@@ -40,6 +41,10 @@ fs-datetime.has-time:not(.has-date) .md-input {
 
 fs-datetime.has-time .md-input {
 	width: auto;
+}
+
+fs-datetime md-input-container.md-block .md-input {
+	width: 100%;
 }
 
 .fs-datetime-dialog {
@@ -350,6 +355,10 @@ fs-datetime-range.md-no-label .to {
 	padding-top: 8px;
 }
 
+fs-datetime-range .datetime-block .datetime-from,
+fs-datetime-range .datetime-block .datetime-to {
+	width: 50%;
+}
 
 @media only screen and (max-width: 500px) {
     .fs-datetime-dialog {
