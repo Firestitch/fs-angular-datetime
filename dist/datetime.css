@@ -11,20 +11,15 @@ fs-datetime .backdrop {
     z-index: 50;
     outline: none;
     overflow:visible;
-    /*pointer-events:none;*/
     background:none !important;
 }
 
-fs-datetime .hint {
+fs-datetime-range .hint {
     top: 33px;
-    left: 0;
-    position: absolute;
     white-space: nowrap;
     overflow: visible;
-}
-
-fs-datetime-range .hint {
     clear: left;
+    position: absolute;
 }
 
 fs-datetime .md-input {
