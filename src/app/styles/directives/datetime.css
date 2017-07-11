@@ -14,7 +14,7 @@ fs-datetime .backdrop {
     background:none !important;
 }
 
-fs-datetime-range .hint {
+fs-datetime-range md-input-container .hint {
     top: 33px;
     white-space: nowrap;
     overflow: visible;
