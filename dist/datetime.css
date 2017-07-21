@@ -103,7 +103,8 @@ fs-datetime md-input-container.md-block .md-input {
     left: 20px;
 }
 
-.fs-datetime-dialog .date::-webkit-scrollbar {
+.fs-datetime-dialog .date::-webkit-scrollbar,
+.fs-datetime-dialog .years::-webkit-scrollbar {
     display: none;
 }
 
@@ -216,6 +217,7 @@ fs-datetime .lbl {
     overflow-y: auto;
     overflow-x: hidden;
     width: 100%;
+    position: relative;
 }
 
 .fs-datetime-dialog .time {
@@ -325,6 +327,14 @@ fs-datetime .lbl {
 	border-top: none;
 }
 
+.fs-datetime-dialog .years {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	overflow-y: auto;
+	height: 100%;
+}
+
 .fs-datetime-dialog .years .year {
 	float: left;
     width: 25%;
@@ -341,6 +351,11 @@ fs-datetime .lbl {
 	clear: both;
 	margin-left: -4px;
 }
+
+.fs-datetime-dialog .viewYears .date {
+    overflow-y: visible;
+}
+
 fs-datetime-range .to {
 	padding: 0 4px;
 	padding-top: 26px;

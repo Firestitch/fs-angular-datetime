@@ -39,13 +39,8 @@
 					$scope.years.push(y);
 				}
 
-				$scope.view = $scope.view || 'calendar';
 				$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
 				$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
-
-				if(!$scope.hasCalendar) {
-					$scope.view = 'date';
-				}
 
 				$scope.dateDays = [];
 				$scope.opened = false;
@@ -306,12 +301,18 @@
 					$scope.view = 'calendar';
 				}
 
-				$scope.monthView = function() {
+				$scope.monthView = function(month) {
 					$scope.view = 'month';
 				}
 
-				$scope.yearView = function() {
+				$scope.yearView = function(year) {
 					$scope.view = 'year';
+					setTimeout(angular.bind(this,function() {
+						var el = service.$date.querySelector('.years [data-year="' + year + '"]');
+						if(el) {
+							angular.element(service.$date.querySelector('.years')).prop('scrollTop',el.offsetTop);
+						}
+					}),50);
 				}
 
 				$scope.open = function() {
@@ -319,6 +320,12 @@
 					showMonth($scope.model);
 					positionDialog();
 					$scope.opened = true;
+					$scope.view = 'calendar';
+
+					if(!$scope.hasCalendar) {
+						$scope.view = 'date';
+					}
+
 					setTimeout(positionDialog);
 				}
 

@@ -1,4 +1,4 @@
-<div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar }">
+<div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }">
 	<div class="wrap">
 		<div layout="row" class="date-time">
 			<div class="date" ng-show="hasDate" flex>
@@ -27,7 +27,7 @@
 					</table>
 				</div>
 				<div class="years" ng-if="view=='year'">
-					<div ng-repeat="year in years" class="year" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
+					<div ng-repeat="year in years" class="year" data-year="{{::year}}" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
 					    {{::year}}
 					</div>
 				</div>
@@ -47,8 +47,8 @@
 						<tr>
 							<td colspan="7" class="month-year">
 								<div layout="row">
-									<a href class="month-name" ng-click="monthView()">{{month.name}}</a>
-									<a href class="year-name" ng-click="yearView()">{{month.year}}</a>
+									<a href class="month-name" ng-click="monthView(month)">{{month.name}}</a>
+									<a href class="year-name" ng-click="yearView(month.year)">{{month.year}}</a>
 		                        </div>
 							</td>
 						</tr>
