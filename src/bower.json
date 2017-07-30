@@ -7,9 +7,11 @@
   "appPath": "app",
   "dependencies": {
     "angular": "1.6.3",
+    "angular-animate": "1.6.3",
     "angular-material": "1.1.3",
     "angular-ui-router": "0.3.2",
     "fs-boilerplate-styles": "^1.0.0",
+    "fs-angular-model": "^1.0.0",
     "fs-angular-modal": "^1.0.0",
     "fs-angular-util": "^1.0.0",
     "fs-angular-browser": "^1.0.0",

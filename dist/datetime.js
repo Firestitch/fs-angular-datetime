@@ -2186,11 +2186,12 @@ Date.CultureInfo = {
 (function () {
 	'use strict';
 
-	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser'])
-	.directive('fsDatetime', function($timeout,$templateCache,$http,$compile,fsUtil,fsDatetime,$q,fsBrowser) {
+	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model'])
+	.directive('fsDatetime', function(fsUtil,$templateCache,$http,$compile,fsBrowser,$timeout,$q) {
 		return {
 			restrict: 'E',
 			templateUrl: 'views/directives/datetime.html',
+			require: '^fsModel',
 			scope: {
 			   model: '=fsModel',
 			   label: '@?fsLabel',
@@ -2212,7 +2213,11 @@ Date.CultureInfo = {
 			   maxYear: '@fsMaxYear',
                hint: '@fsHint'
 			},
-			controller: function($scope) {
+			link: function($scope, $el, attrs, model) {
+
+				$scope.$el = $el;
+				$scope.$dialog = null;
+
 				var isFirefox = fsBrowser.firefox();
 				var monthPadding = 3;
 
@@ -2346,87 +2351,6 @@ Date.CultureInfo = {
 						$scope.disabledTimeHours[range] = true;
 					}
 				}
-
-				var disableWatch = false;
-				$scope.$watch('model',function(value,ovalue) {
-
-					if(disableWatch) {
-						disableWatch = false;
-						return;
-					}
-
-					service.disableScroll = true;
-
-					var format = [],
-						options = options || {};
-
-					if(fsUtil.isInt(value)) {
-						value = moment(new Date(value));
-					} else if(fsUtil.isString(value)) {
-						if(moment(value).isValid()) {
-							value = moment(value);
-						} else {
-							value = moment(Date.parse(value));
-						}
-					}
-
-					if(value && moment(value).isValid()) {
-
-						value = moment(value);
-						$scope.model = value;
-
-						if($scope.hasDate) {
-							format.push('MMM D, YYYY');
-						}
-
-						if($scope.hasTime) {
-							format.push('h:mm a');
-						}
-
-						if(!$scope.focused) {
-							$scope.input = value.format(format.join(' '));
-							$scope.inputLength = $scope.input.length;
-						}
-
-						drawMonths(value);
-						showMonth(value);
-
-						var year = parseInt(value.format('YYYY'));
-						if(parseInt($scope.selected.year)!=year) {
-							$scope.yearList = [];
-							for(var y=year + 100;y>(year-100);y--) {
-								$scope.yearList.push(y);
-							}
-						}
-
-						$scope.selected.date = value.format('YYYY-MM-DD');
-						$scope.selected.hour = parseInt(value.format('H'));
-						$scope.selected.minute = parseInt(value.format('m'));
-						$scope.selected.year = parseInt(value.format('YYYY'));
-						$scope.selected.month = parseInt(value.format('M'));
-						$scope.selected.day = parseInt(value.format('D'));
-
-					} else {
-						$scope.input = '';
-						$scope.inputLength = $scope.input.length;
-						$scope.model = undefined;
-						$scope.selected.date = undefined;
-						$scope.selected.hour = undefined;
-						$scope.selected.minute = undefined;
-						$scope.selected.year = undefined;
-						$scope.selected.month = undefined;
-						$scope.selected.day = undefined;
-					}
-
-					if(value!=ovalue) {
-						//Disable the next watch
-						disableWatch = true;
-					}
-
-					setTimeout(function() {
-						service.disableScroll = false;
-					});
-				});
 
 				updateDateDays();
 
@@ -2924,27 +2848,116 @@ Date.CultureInfo = {
 					disableScroll: false
 				};
 
-				return service;
-			},
-			link: function($scope, $el, attrs, ctrl) {
+				function render() {
 
-				$scope.$el = $el;
-				$scope.$dialog = null;
+					var format = [],
+						options = options || {},
+						value = $scope.model;
+
+					if(fsUtil.isInt(value)) {
+						value = moment(new Date(value));
+					} else if(fsUtil.isString(value)) {
+						if(moment(value).isValid()) {
+							value = moment(value);
+						} else {
+							value = moment(Date.parse(value));
+						}
+					}
+
+					if(value && moment(value).isValid()) {
+
+						if($scope.hasDate) {
+							format.push('MMM D, YYYY');
+						}
+
+						if($scope.hasTime) {
+							format.push('h:mm a');
+						}
+
+						if(!$scope.focused) {
+							$scope.input = value.format(format.join(' '));
+							$scope.inputLength = $scope.input.length;
+						}
+
+						service.drawMonths(value);
+						service.showMonth(value);
+
+						var year = parseInt(value.format('YYYY'));
+						if(parseInt($scope.selected.year)!=year) {
+							$scope.yearList = [];
+							for(var y=year + 100;y>(year-100);y--) {
+								$scope.yearList.push(y);
+							}
+						}
+
+						$scope.selected.date = value.format('YYYY-MM-DD');
+						$scope.selected.hour = parseInt(value.format('H'));
+						$scope.selected.minute = parseInt(value.format('m'));
+						$scope.selected.year = parseInt(value.format('YYYY'));
+						$scope.selected.month = parseInt(value.format('M'));
+						$scope.selected.day = parseInt(value.format('D'));
+
+					} else {
+						$scope.input = '';
+						$scope.inputLength = $scope.input.length;
+
+						$scope.selected.date = undefined;
+						$scope.selected.hour = undefined;
+						$scope.selected.minute = undefined;
+						$scope.selected.year = undefined;
+						$scope.selected.month = undefined;
+						$scope.selected.day = undefined;
+					}
+				}
+
+				model.render = function() {
+
+					if(this.value && moment(this.value).isValid()) {
+						this.value = moment(this.value);
+					} else {
+						this.value = undefined;
+					}
+
+					render();
+				}
+
+				var disableWatch = false;
+				$scope.$watch('model',function(value,ovalue) {
+
+					/*if(disableWatch) {
+						disableWatch = false;
+						return;
+					}*/
+
+					service.disableScroll = true;
+
+
+
+					/*if(value!=ovalue) {
+						//Disable the next watch
+						disableWatch = true;
+					}*/
+
+					setTimeout(function() {
+						service.disableScroll = false;
+					});
+				});
+
 
 				var padding = 300;
 				var dateScroll = function(e) {
 
 					if(e.target.scrollHeight<(e.target.scrollTop + e.target.offsetHeight + padding)) {
-						return ctrl.appendTop();
+						return service.appendTop();
 					} else if(e.target.scrollTop<padding) {
-						return ctrl.appendBottom();
+						return service.appendBottom();
 					}
 
 					return $q.resolve();
 				}
 
 				function windowScroll() {
-					ctrl.positionDialog();
+					service.positionDialog();
 				}
 
 				var appendPromises = [];
@@ -2958,10 +2971,10 @@ Date.CultureInfo = {
 						$scope.$dialog = angular.element(response.data);
 						angular.element(document.body).append($scope.$dialog);
 						$compile($scope.$dialog)($scope);
-						ctrl.$date = $scope.$dialog[0].querySelector('.date');
-						angular.element(ctrl.$date).on('scroll',function(e) {
+						service.$date = $scope.$dialog[0].querySelector('.date');
+						angular.element(service.$date).on('scroll',function(e) {
 
-							if(ctrl.disableScroll) {
+							if(service.disableScroll) {
 								return;
 							}
 
@@ -2986,7 +2999,7 @@ Date.CultureInfo = {
 				angular.element(window).on('scroll resize',windowScroll);
 
 				$scope.$on('$destroy',function() {
-					angular.element(ctrl.$date).off('scroll',dateScroll);
+					angular.element(service.$date).off('scroll',dateScroll);
 					angular.element(window).off('scroll',windowScroll);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();
@@ -3030,7 +3043,7 @@ Date.CultureInfo = {
             	$scope.$watch('from',function() {
             		if($scope.from && $scope.to) {
             			if($scope.to.isBefore($scope.from)) {
-            				$scope.to = null;
+            				$scope.to = undefined;
             			}
             		}
             	});

@@ -14,8 +14,8 @@
         alert('submit');
     }
 
-    $scope.model1 = null;
-    $scope.model3 = null;
+    $scope.model1 = undefined;
+    $scope.model3 = undefined;
     $scope.model4 = Date.now();
 
     $scope.modelUpdate = Date.now();
