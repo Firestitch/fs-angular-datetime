@@ -559,7 +559,7 @@
 						var month = queryMonth(d);
 
 						if(month) {
-							service.$date.scrollTop = month.offsetTop - 52;
+							service.$date.scrollTop = month.offsetTop;
 						}
 					},date),50);
 				}

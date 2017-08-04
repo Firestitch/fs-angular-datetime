@@ -2739,12 +2739,12 @@ Date.CultureInfo = {
 				function showMonth(date) {
 
 					setTimeout(angular.bind(this,function(d) {
-
+debugger;
 						var d = d ? d : createMoment();
 						var month = queryMonth(d);
 
 						if(month) {
-							service.$date.scrollTop = month.offsetTop - 52;
+							service.$date.scrollTop = month.offsetTop;
 						}
 					},date),50);
 				}

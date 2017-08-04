@@ -86,7 +86,7 @@ fs-datetime md-input-container.md-block .md-input {
 	border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 19px solid #fff;
-    top: -19px;
+    top: -18px;
     content: '';
     left: 50%;
     position: absolute;
@@ -99,7 +99,7 @@ fs-datetime md-input-container.md-block .md-input {
     border-right: 23px solid transparent;
     border-top: 21px solid transparent;
     border-top-color: #efefef;
-    top: -21px;
+    top: -20px;
     left: 20px;
 }
 
