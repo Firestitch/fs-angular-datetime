@@ -2739,7 +2739,7 @@ Date.CultureInfo = {
 				function showMonth(date) {
 
 					setTimeout(angular.bind(this,function(d) {
-debugger;
+
 						var d = d ? d : createMoment();
 						var month = queryMonth(d);
 
