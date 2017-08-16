@@ -2910,15 +2910,16 @@ Date.CultureInfo = {
 					}
 				}
 
-				model.watch = function() {
+				model.watch = function(value) {
 
-					if(this.value() && moment(this.value()).isValid()) {
-						this.value(moment(this.value()));
+					if(value && moment(value).isValid()) {
+						this.value(moment(value));
 					} else {
 						this.value(undefined);
 					}
 
 					this.commit();
+					$scope.model = this.value();
 					render();
 				}
 

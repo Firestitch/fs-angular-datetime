@@ -16,7 +16,7 @@
 
     $scope.model1 = undefined;
     $scope.model3 = undefined;
-    $scope.model6 = Date.now();
+    $scope.model6 = new Date();
 
     $scope.modelUpdate = Date.now();
 
