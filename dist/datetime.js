@@ -2910,7 +2910,7 @@ Date.CultureInfo = {
 					}
 				}
 
-				model.render = function() {
+				model.watch = function() {
 
 					if(this.value() && moment(this.value()).isValid()) {
 						this.value(moment(this.value()));
@@ -2918,6 +2918,7 @@ Date.CultureInfo = {
 						this.value(undefined);
 					}
 
+					this.commit();
 					render();
 				}
 
