@@ -24,6 +24,8 @@ fs-datetime-range md-input-container .hint {
 
 fs-datetime .md-input {
 	min-width: 100px;
+	z-index: 51;
+	position: relative;
 }
 
 fs-datetime.has-time .md-input {

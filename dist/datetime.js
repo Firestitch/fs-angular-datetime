@@ -2187,7 +2187,7 @@ Date.CultureInfo = {
 	'use strict';
 
 	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model'])
-	.directive('fsDatetime', function(fsUtil,$templateCache,$http,$compile,fsBrowser,$timeout,$q) {
+	.directive('fsDatetime', function(fsUtil, $templateCache, $http, $compile, fsBrowser, $timeout, $q, fsDatetime) {
 		return {
 			restrict: 'E',
 			templateUrl: 'views/directives/datetime.html',
@@ -2739,7 +2739,7 @@ Date.CultureInfo = {
 				function showMonth(date) {
 
 					setTimeout(angular.bind(this,function(d) {
-debugger;
+
 						var d = d ? d : createMoment();
 						var month = queryMonth(d);
 
@@ -2912,10 +2912,10 @@ debugger;
 
 				model.render = function() {
 
-					if(this.value && moment(this.value).isValid()) {
-						this.value = moment(this.value);
+					if(this.value() && moment(this.value()).isValid()) {
+						this.value(moment(this.value()));
 					} else {
-						this.value = undefined;
+						this.value(undefined);
 					}
 
 					render();
