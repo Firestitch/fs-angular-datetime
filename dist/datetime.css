@@ -373,17 +373,24 @@ fs-datetime-range .datetime-block .datetime-to {
 	width: 50%;
 }
 
+.fs-datetime-dialog .close {
+	padding: 5px;
+	display: none;
+}
+
 @media only screen and (max-width: 500px) {
     .fs-datetime-dialog {
     	left: 0 !important;
     	right: 0 !important;
     	top: 0 !important;
+    	bottom: 0px !important;
     	margin: 0px;
     }
 
     .fs-datetime-dialog .wrap {
     	margin: 0px;
     	width: 100%;
+    	height: 100%;
     }
 
     .fs-datetime-dialog .day {
@@ -392,5 +399,13 @@ fs-datetime-range .datetime-block .datetime-to {
 
 	.fs-datetime-dialog table {
 	    width: 100%;
+	}
+
+	.fs-datetime-dialog .date-time {
+	    height: 100% !important;
+	}
+
+	.fs-datetime-dialog .close {
+		display: flex;
 	}
 }

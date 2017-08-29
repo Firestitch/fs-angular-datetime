@@ -186,7 +186,8 @@
 					}
 				}
 
-				$scope.inputFocus = function() {
+				$scope.inputFocus = function(e) {
+					e.target.blur();
 					$scope.focused = true;
 					$scope.open();
 					showMonth($scope.model);

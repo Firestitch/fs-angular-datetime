@@ -1,5 +1,8 @@
 <div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }">
 	<div class="wrap">
+		<div class="close" layout="row" layout-align="end center">
+			<a href ng-click="close()"><md-icon>clear</md-icon></a>
+		</div>
 		<div layout="row" class="date-time">
 			<div class="date" ng-show="hasDate" flex>
 				<div class="months" ng-if="view=='month'">
