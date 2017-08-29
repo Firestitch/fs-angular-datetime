@@ -529,7 +529,7 @@
 						if(month) {
 							var m = month.moment.clone();
 							var remove, height = 0;
-							for(var i=1;i<=1;i++) {
+							for(var i=1;i<=3;i++) {
 
 								if(value>0) {
 									$scope.months.push(createMonth(m.add(1,'month')));
@@ -543,8 +543,6 @@
 									height += service.$date.querySelector('.calendar-' + remove.moment.format('YYYY-M')).offsetHeight;
 								}
 							}
-
-							console.log(1);
 
 							$scope.$apply();
 
@@ -751,7 +749,7 @@
 
 				angular.element(window).on('scroll resize',windowScroll);
 
-				var th = fsUtil.throttle(dateScroll,3);
+				var th = fsUtil.throttle(dateScroll,50);
 
 				$scope.$on('$destroy',function() {
 					angular.element(service.$date).off('scroll',th);
