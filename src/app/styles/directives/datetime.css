@@ -376,9 +376,20 @@ fs-datetime-range .datetime-block .datetime-to {
     .fs-datetime-dialog {
     	left: 0 !important;
     	right: 0 !important;
+    	top: 0 !important;
+    	margin: 0px;
     }
 
     .fs-datetime-dialog .wrap {
-    	margin: auto;
+    	margin: 0px;
+    	width: 100%;
     }
+
+    .fs-datetime-dialog .day {
+    	width: 14.28%;
+    }
+
+	.fs-datetime-dialog table {
+	    width: 100%;
+	}
 }
