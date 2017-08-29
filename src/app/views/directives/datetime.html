@@ -2,7 +2,6 @@
 	<label>{{label}}</label>
 	<input 	ng-model="input"
 			type="text"
-			ng-change="inputChange()"
 			ng-click="inputClick($event)"
 			ng-keyup="inputKeyup($event)"
 			ng-blur="inputBlur($event)"
@@ -10,7 +9,10 @@
 			ng-model-options="{ debounce: 300 }"
 			ng-required="required"
 			name="{{name}}"
-			aria-label="input" size="{{inputLength || 1}}" ng-disabled="disabled"/>
+			aria-label="input"
+			size="{{inputLength || 1}}"
+			ng-disabled="disabled"
+			readonly/>
 	<div class="hint" ng-if="hint">{{hint}}</div>
 </md-input-container>
 <div class="backdrop ng-hide" ng-show="opened" ng-click="close($event)"></div>

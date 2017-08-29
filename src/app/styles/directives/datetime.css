@@ -26,6 +26,7 @@ fs-datetime .md-input {
 	min-width: 100px;
 	z-index: 51;
 	position: relative;
+	cursor: pointer;
 }
 
 fs-datetime.has-time .md-input {

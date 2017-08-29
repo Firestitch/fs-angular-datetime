@@ -169,29 +169,6 @@
 
 				updateDateDays();
 
-				$scope.inputChange = function(type) {
-					var date = fsDatetime.parse($scope.input);
-					if(date) {
-						$scope.model = moment(date);
-
-						if($scope.defaultTime) {
-							if(!parseInt($scope.model.format('H')) && !parseInt($scope.model.format('m'))) {
-
-								var match = $scope.defaultTime.match(/(\d)+:(\d)+/);
-
-								if(match) {
-									$scope.model.set({ hour: match[1], minute: match[2], second: 0, millisecond: 0 });
-								}
-							}
-						}
-
-						if($scope.model) {
-							setDate($scope.model);
-							change();
-						}
-					}
-				}
-
 				function createModel() {
 					if(!$scope.model) {
 						$scope.model = createMoment();
@@ -253,54 +230,10 @@
 					setTimeout(positionDialog);
 				}
 
-				$scope.inputClick = function(e) {
-
+				$scope.inputClick = function() {
 					$scope.open();
 					showMonth($scope.model);
-
-					var input = e.target;
-					var pos = null;
-					if ('selectionStart' in input) {
-						pos = input.selectionStart;
-					} else if (document.selection) {
-						// IE
-						input.focus();
-						var sel = document.selection.createRange();
-						var selLen = document.selection.createRange().text.length;
-						sel.moveStart('character', - input.value.length);
-						pos = sel.text.length - selLen;
-					}
-
-					var s1 = input.value.substring(0,pos);
-					var s2 = input.value.substring(pos);
-
-					s1 = s1.match(/[a-z0-9]+$/i);
-					s2 = s2.match(/^[a-z0-9]+/i);
-
-					if(s1 && s2) {
-
-						var start = pos - s1[0].length;
-						var end = pos + s2[0].length;
-
-						if( input.createTextRange ) {
-							var selRange = input.createTextRange();
-							selRange.collapse(true);
-							selRange.moveStart('character', start);
-							selRange.moveEnd('character', end);
-							selRange.select();
-							input.focus();
-						} else if( input.setSelectionRange ) {
-							input.focus();
-							input.setSelectionRange(start, end);
-						} else if( typeof input.selectionStart != 'undefined' ) {
-							input.selectionStart = start;
-							input.selectionEnd = end;
-							input.focus();
-						}
-					}
 				}
-
-
 
 				$scope.monthClick = function(month) {
 					angular.extend(month.months,$scope.monthList);
