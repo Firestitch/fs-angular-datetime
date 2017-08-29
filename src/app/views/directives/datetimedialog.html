@@ -34,8 +34,8 @@
 					    {{::year}}
 					</div>
 				</div>
-				<table ng-show="hasCalendar" class="calendar" ng-if="view=='calendar'">
-					<thead>
+				<table ng-if="hasCalendar && view=='calendar'" class="calendar">
+					<!-- <thead>
 						<tr>
 							<th>Sun</th>
 							<th>Mon</th>
@@ -45,7 +45,7 @@
 							<th>Fri</th>
 							<th>Sat</th>
 						</tr>
-					</thead>
+					</thead> -->
 					<tbody class="calendar calendar-{{::month.date}}" ng-repeat="month in months track by month.date">
 						<tr>
 							<td colspan="7" class="month-year">
@@ -88,7 +88,7 @@
 				</div>
 			</div>
 
-			<div class="time" ng-show="hasTime">
+			<div class="time" ng-if="hasTime">
 				<div layout="row" layout-align="start start">
 					<div class="hours">
 						<div class="lbl">Hour</div>
@@ -119,7 +119,7 @@
 				</div>
 			</div>
 		</div>
-		<div layout="row" layout-align="end start" ng-show="hasTime">
+		<div layout="row" layout-align="end start" ng-if="hasTime">
 			<md-button class="md-accent" ng-click="close($event)">Done</md-button>
 		</div>
 	</div>

@@ -529,7 +529,7 @@
 						if(month) {
 							var m = month.moment.clone();
 							var remove, height = 0;
-							for(var i=1;i<=3;i++) {
+							for(var i=1;i<=1;i++) {
 
 								if(value>0) {
 									$scope.months.push(createMonth(m.add(1,'month')));
@@ -544,6 +544,8 @@
 								}
 							}
 
+							console.log(1);
+
 							$scope.$apply();
 
 							if(height) {
@@ -555,7 +557,8 @@
 				}
 
 				function positionDialog() {
-					if(!$scope.$dialog || !$scope.$dialog.length)
+
+					if(!$scope.$dialog || !$scope.$dialog.length || window.innerWidth<500)
 						return;
 
 					var input = $scope.$el.find('input');
@@ -704,8 +707,6 @@
 					} else if(e.target.scrollTop<padding) {
 						return service.appendBottom();
 					}
-
-					return $q.resolve();
 				}
 
 				function windowScroll() {
@@ -750,8 +751,10 @@
 
 				angular.element(window).on('scroll resize',windowScroll);
 
+				var th = fsUtil.throttle(dateScroll,3);
+
 				$scope.$on('$destroy',function() {
-					angular.element(service.$date).off('scroll',dateScroll);
+					angular.element(service.$date).off('scroll',th);
 					angular.element(window).off('scroll',windowScroll);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();
@@ -911,7 +914,27 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
 
 
   $templateCache.put('views/directives/datetimedialog.html',
-    "<div class=\"fs-datetime-dialog\" tabindex=\"0\" ng-class=\"{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }\"><div class=\"wrap\"><div class=\"close\" layout=\"row\" layout-align=\"end center\"><a href ng-click=\"close()\"><md-icon>clear</md-icon></a></div><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\" flex><div class=\"months\" ng-if=\"view=='month'\"><table><tr><td ng-click=\"monthViewChange(1)\" ng-class=\"{ selected: selected.month==1 }\">Jan</td><td ng-click=\"monthViewChange(2)\" ng-class=\"{ selected: selected.month==2 }\">Feb</td><td ng-click=\"monthViewChange(3)\" ng-class=\"{ selected: selected.month==3 }\">Mar</td></tr><tr><td ng-click=\"monthViewChange(4)\" ng-class=\"{ selected: selected.month==4 }\">Apr</td><td ng-click=\"monthViewChange(5)\" ng-class=\"{ selected: selected.month==5 }\">May</td><td ng-click=\"monthViewChange(6)\" ng-class=\"{ selected: selected.month==6 }\">Jun</td></tr><tr><td ng-click=\"monthViewChange(7)\" ng-class=\"{ selected: selected.month==7 }\">Jul</td><td ng-click=\"monthViewChange(8)\" ng-class=\"{ selected: selected.month==8 }\">Aug</td><td ng-click=\"monthViewChange(9)\" ng-class=\"{ selected: selected.month==9 }\">Sept</td></tr><tr><td ng-click=\"monthViewChange(10)\" ng-class=\"{ selected: selected.month==10 }\">Oct</td><td ng-click=\"monthViewChange(11)\" ng-class=\"{ selected: selected.month==11 }\">Nov</td><td ng-click=\"monthViewChange(12)\" ng-class=\"{ selected: selected.month==12 }\">Dec</td></tr></table></div><div class=\"years\" ng-if=\"view=='year'\"><div ng-repeat=\"year in years\" class=\"year\" data-year=\"{{::year}}\" ng-class=\"{ row : ($index % 4 == 0), selected: selected.year==year }\" ng-click=\"yearViewChange(year)\">{{::year}}</div></div><table ng-show=\"hasCalendar\" class=\"calendar\" ng-if=\"view=='calendar'\"><thead><tr><th>Sun</th><th>Mon</th><th>Tues</th><th>Wed</th><th>Thurs</th><th>Fri</th><th>Sat</th></tr></thead><tbody class=\"calendar calendar-{{::month.date}}\" ng-repeat=\"month in months track by month.date\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><a href class=\"month-name\" ng-click=\"monthView(month)\">{{month.name}}</a> <a href class=\"year-name\" ng-click=\"yearView(month.year)\">{{month.year}}</a></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week track by day.number\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selected.date && !day.mute, disabled: day.disabled }\" ng-click=\"dayClick(day)\"><span>{{::day.number}}</span></td></tr></tbody></table><div ng-if=\"view=='date'\" layout=\"row\" class=\"inline-date\"><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Month\" ng-model=\"selected.month\" aria-label=\"Month\" ng-change=\"monthDateViewChange()\"><md-option ng-repeat=\"item in monthList track by item.value\" ng-value=\"item.value\">{{::item.name}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Day\" ng-model=\"selected.day\" aria-label=\"Day\" ng-change=\"dayDateViewChange()\"><md-option ng-repeat=\"(key,value) in dateDays\" ng-value=\"value\">{{::value}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Year\" ng-model=\"selected.year\" aria-label=\"Year\" ng-change=\"yearDateViewChange()\"><md-option ng-repeat=\"item in years\" ng-value=\"item\">{{::item}}</md-option></md-select></md-input-container></div></div></div><div class=\"time\" ng-show=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ disabled: disabledTimeHours[hour], selected: hour==selected.hour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ disabled: disabledTimeMinutes[minute] || disabledGroupedMinutes[selected.hour][minute], selected: minute==selected.minute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{::minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-show=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
+    "<div class=\"fs-datetime-dialog\" tabindex=\"0\" ng-class=\"{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }\"><div class=\"wrap\"><div class=\"close\" layout=\"row\" layout-align=\"end center\"><a href ng-click=\"close()\"><md-icon>clear</md-icon></a></div><div layout=\"row\" class=\"date-time\"><div class=\"date\" ng-show=\"hasDate\" flex><div class=\"months\" ng-if=\"view=='month'\"><table><tr><td ng-click=\"monthViewChange(1)\" ng-class=\"{ selected: selected.month==1 }\">Jan</td><td ng-click=\"monthViewChange(2)\" ng-class=\"{ selected: selected.month==2 }\">Feb</td><td ng-click=\"monthViewChange(3)\" ng-class=\"{ selected: selected.month==3 }\">Mar</td></tr><tr><td ng-click=\"monthViewChange(4)\" ng-class=\"{ selected: selected.month==4 }\">Apr</td><td ng-click=\"monthViewChange(5)\" ng-class=\"{ selected: selected.month==5 }\">May</td><td ng-click=\"monthViewChange(6)\" ng-class=\"{ selected: selected.month==6 }\">Jun</td></tr><tr><td ng-click=\"monthViewChange(7)\" ng-class=\"{ selected: selected.month==7 }\">Jul</td><td ng-click=\"monthViewChange(8)\" ng-class=\"{ selected: selected.month==8 }\">Aug</td><td ng-click=\"monthViewChange(9)\" ng-class=\"{ selected: selected.month==9 }\">Sept</td></tr><tr><td ng-click=\"monthViewChange(10)\" ng-class=\"{ selected: selected.month==10 }\">Oct</td><td ng-click=\"monthViewChange(11)\" ng-class=\"{ selected: selected.month==11 }\">Nov</td><td ng-click=\"monthViewChange(12)\" ng-class=\"{ selected: selected.month==12 }\">Dec</td></tr></table></div><div class=\"years\" ng-if=\"view=='year'\"><div ng-repeat=\"year in years\" class=\"year\" data-year=\"{{::year}}\" ng-class=\"{ row : ($index % 4 == 0), selected: selected.year==year }\" ng-click=\"yearViewChange(year)\">{{::year}}</div></div><table ng-if=\"hasCalendar && view=='calendar'\" class=\"calendar\"><!-- <thead>\r" +
+    "\n" +
+    "\t\t\t\t\t\t<tr>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Sun</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Mon</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Tues</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Wed</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Thurs</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Fri</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t<th>Sat</th>\r" +
+    "\n" +
+    "\t\t\t\t\t\t</tr>\r" +
+    "\n" +
+    "\t\t\t\t\t</thead> --><tbody class=\"calendar calendar-{{::month.date}}\" ng-repeat=\"month in months track by month.date\"><tr><td colspan=\"7\" class=\"month-year\"><div layout=\"row\"><a href class=\"month-name\" ng-click=\"monthView(month)\">{{month.name}}</a> <a href class=\"year-name\" ng-click=\"yearView(month.year)\">{{month.year}}</a></div></td></tr><tr class=\"week\" ng-repeat=\"week in month.weeks\"><td ng-repeat=\"day in week track by day.number\" class=\"day\" ng-class=\"{ mute: day.mute, selected: day.date==selected.date && !day.mute, disabled: day.disabled }\" ng-click=\"dayClick(day)\"><span>{{::day.number}}</span></td></tr></tbody></table><div ng-if=\"view=='date'\" layout=\"row\" class=\"inline-date\"><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Month\" ng-model=\"selected.month\" aria-label=\"Month\" ng-change=\"monthDateViewChange()\"><md-option ng-repeat=\"item in monthList track by item.value\" ng-value=\"item.value\">{{::item.name}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Day\" ng-model=\"selected.day\" aria-label=\"Day\" ng-change=\"dayDateViewChange()\"><md-option ng-repeat=\"(key,value) in dateDays\" ng-value=\"value\">{{::value}}</md-option></md-select></md-input-container></div><div flex=\"33\"><md-input-container class=\"md-block md-no-message md-no-label\" md-no-float=\"true\"><md-select placeholder=\"Year\" ng-model=\"selected.year\" aria-label=\"Year\" ng-change=\"yearDateViewChange()\"><md-option ng-repeat=\"item in years\" ng-value=\"item\">{{::item}}</md-option></md-select></md-input-container></div></div></div><div class=\"time\" ng-if=\"hasTime\"><div layout=\"row\" layout-align=\"start start\"><div class=\"hours\"><div class=\"lbl\">Hour</div><table><tr ng-repeat=\"hours in timeHours\"><td ng-repeat=\"hour in hours\" class=\"hour\" ng-click=\"hourClick(hour)\" ng-class=\"{ disabled: disabledTimeHours[hour], selected: hour==selected.hour }\"><div class=\"number\"><span ng-if=\"hour<12\">{{hour ? hour : 12}}<span class=\"am-pm\">am</span></span> <span ng-if=\"hour>=12\">{{hour==12 ? 12 : hour-12}}<span class=\"am-pm\">pm</span></span></div></td></tr></table></div><div class=\"minutes\"><div class=\"lbl\">Minute</div><table><tr ng-repeat=\"minutes in timeMinutes\"><td ng-repeat=\"minute in minutes\" class=\"minute\" ng-class=\"{ disabled: disabledTimeMinutes[minute] || disabledGroupedMinutes[selected.hour][minute], selected: minute==selected.minute }\" ng-click=\"minuteClick(minute)\"><div class=\"number\">{{::minute}}</div></td></tr></table></div></div></div></div><div layout=\"row\" layout-align=\"end start\" ng-if=\"hasTime\"><md-button class=\"md-accent\" ng-click=\"close($event)\">Done</md-button></div></div></div>"
   );
 
 

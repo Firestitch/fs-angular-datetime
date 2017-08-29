@@ -528,7 +528,7 @@
 						if(month) {
 							var m = month.moment.clone();
 							var remove, height = 0;
-							for(var i=1;i<=3;i++) {
+							for(var i=1;i<=1;i++) {
 
 								if(value>0) {
 									$scope.months.push(createMonth(m.add(1,'month')));
@@ -543,6 +543,8 @@
 								}
 							}
 
+							console.log(1);
+
 							$scope.$apply();
 
 							if(height) {
@@ -554,7 +556,8 @@
 				}
 
 				function positionDialog() {
-					if(!$scope.$dialog || !$scope.$dialog.length)
+
+					if(!$scope.$dialog || !$scope.$dialog.length || window.innerWidth<500)
 						return;
 
 					var input = $scope.$el.find('input');
@@ -703,8 +706,6 @@
 					} else if(e.target.scrollTop<padding) {
 						return service.appendBottom();
 					}
-
-					return $q.resolve();
 				}
 
 				function windowScroll() {
@@ -749,8 +750,10 @@
 
 				angular.element(window).on('scroll resize',windowScroll);
 
+				var th = fsUtil.throttle(dateScroll,3);
+
 				$scope.$on('$destroy',function() {
-					angular.element(service.$date).off('scroll',dateScroll);
+					angular.element(service.$date).off('scroll',th);
 					angular.element(window).off('scroll',windowScroll);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();
