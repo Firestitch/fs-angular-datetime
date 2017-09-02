@@ -73,7 +73,7 @@ fs-datetime md-input-container.md-block .md-input {
 
 .fs-datetime-dialog.has-time.has-date .date-time,
 .fs-datetime-dialog.has-time:not(.has-date) .date-time {
-	height: 414px;
+	height: 427px;
 }
 
 .fs-datetime-dialog.has-time.has-date .wrap {
@@ -377,7 +377,28 @@ fs-datetime-range .datetime-block .datetime-to {
 	display: none;
 }
 
-@media only screen and (max-width: 500px) {
+.fs-datetime-dialog .done {
+    background: #fff;
+    border-top: 1px solid #E1E1E1;
+}
+
+.fs-datetime-dialog fs-tabnav {
+	display: none;
+}
+
+.fs-datetime-dialog fs-tabnav .md-tabs a {
+    width: 50%;
+}
+
+@media only screen and (min-width: 500px) {
+
+	.fs-datetime-dialog .time,
+	.fs-datetime-dialog .date {
+		display: flex !important;
+	}
+}
+
+@media only screen and (max-width: 499px) {
     .fs-datetime-dialog {
     	left: 0 !important;
     	right: 0 !important;
@@ -388,7 +409,7 @@ fs-datetime-range .datetime-block .datetime-to {
 
     .fs-datetime-dialog .wrap {
     	margin: 0px;
-    	width: 100%;
+    	width: 100% !important;
     	height: 100%;
     }
 
@@ -406,5 +427,21 @@ fs-datetime-range .datetime-block .datetime-to {
 
 	.fs-datetime-dialog .close {
 		display: flex;
+	}
+
+	.fs-datetime-dialog .done {
+		position: absolute;
+	    bottom: 0;
+	    z-index: 99999;
+	    width: 100%;
+	    display: flex !important;
+	}
+
+	.fs-datetime-dialog fs-tabnav {
+		display: block;
+	}
+
+	.fs-datetime-dialog .time {
+	    margin: 0 auto;
 	}
 }

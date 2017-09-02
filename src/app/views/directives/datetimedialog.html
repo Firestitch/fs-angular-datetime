@@ -1,10 +1,11 @@
 <div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }">
 	<div class="wrap">
-		<div class="close" layout="row" layout-align="end center">
-			<a href ng-click="close()"><md-icon>clear</md-icon></a>
-		</div>
+		<fs-tabnav fs-selected="tab" ng-show="hasDate && hasTime">
+	        <fs-tabnav-item fs-name="date">Date</fs-tabnav-item>
+	        <fs-tabnav-item fs-name="time">Time</fs-tabnav-item>
+    	</fs-tabnav>
 		<div layout="row" class="date-time">
-			<div class="date" ng-show="hasDate" flex>
+			<div class="date" ng-show="tab=='date'" flex>
 				<div class="months" ng-if="view=='month'">
 					<table>
 						<tr>
@@ -88,7 +89,7 @@
 				</div>
 			</div>
 
-			<div class="time" ng-if="hasTime">
+			<div class="time" ng-if="hasTime" ng-show="tab=='time'">
 				<div layout="row" layout-align="start start">
 					<div class="hours">
 						<div class="lbl">Hour</div>
@@ -119,7 +120,7 @@
 				</div>
 			</div>
 		</div>
-		<div layout="row" layout-align="end start" ng-if="hasTime">
+		<div layout="row" layout-align="end start" ng-show="hasTime" class="done">
 			<md-button class="md-accent" ng-click="close($event)">Done</md-button>
 		</div>
 	</div>

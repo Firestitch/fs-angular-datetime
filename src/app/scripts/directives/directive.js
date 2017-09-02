@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model'])
+	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model','fs-angular-tabnav'])
 	.directive('fsDatetime', function(fsUtil, $templateCache, $http, $compile, fsBrowser, $timeout, $q, fsDatetime) {
 		return {
 			restrict: 'E',
@@ -32,6 +32,8 @@
 
 				$scope.$el = $el;
 				$scope.$dialog = null;
+				$scope.hasDate = $scope.hasDate || $scope.hasDate===undefined;
+				$scope.tab = $scope.hasDate ? 'date' : 'time';
 
 				var isFirefox = fsBrowser.firefox();
 				var monthPadding = 3;
@@ -179,16 +181,8 @@
 					return moment().startOf('day');
 				}
 
-				$scope.inputBlur = function(e) {
-					$scope.focused = false;
-					if(!parentDialog(e.relatedTarget)) {
-						$scope.close();
-					}
-				}
-
 				$scope.inputFocus = function(e) {
 					e.target.blur();
-					$scope.focused = true;
 					$scope.open();
 					showMonth($scope.model);
 				}
@@ -217,6 +211,14 @@
 					}),50);
 				}
 
+				function documentKeyup(e) {
+				   	if(e.keyCode == 27) {
+				    	$scope.$apply(function() {
+				    		$scope.close();
+				    	});
+				    }
+				}
+
 				$scope.open = function() {
 					drawMonths($scope.model);
 					showMonth($scope.model);
@@ -229,6 +231,7 @@
 					}
 
 					setTimeout(positionDialog);
+					angular.element(document).on('keyup',documentKeyup);
 				}
 
 				$scope.inputClick = function() {
@@ -246,8 +249,7 @@
 
 				$scope.close = function(e) {
 					$scope.opened = false;
-
-
+					angular.element(document).off('keyup',documentKeyup);
 				}
 
 				$scope.dayClick = function(day) {
