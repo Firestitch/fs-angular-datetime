@@ -67,15 +67,6 @@ fs-datetime md-input-container.md-block .md-input {
     width: 372px;
 }
 
-.fs-datetime-dialog.has-calendar .date-time {
-	height: 360px;
-}
-
-.fs-datetime-dialog.has-time.has-date .date-time,
-.fs-datetime-dialog.has-time:not(.has-date) .date-time {
-	height: 427px;
-}
-
 .fs-datetime-dialog.has-time.has-date .wrap {
     width: 645px;
 }
@@ -115,20 +106,26 @@ fs-datetime md-input-container.md-block .md-input {
 	padding: 10px;
 }
 
+.fs-datetime-dialog .month-year .actions {
+	text-align: right;
+}
+
+.fs-datetime-dialog .month-year .more {
+	padding: 1px;
+}
+
 .fs-datetime-dialog .month-year {
-	height: 40px;
-	font-size: 17px;
-	padding-left: 15px;
-	border: 1px solid #efefef;
-	border-left: none;
+	height: 60px;
+    font-size: 17px;
+    padding: 0 10px;
 }
 
 .fs-datetime-dialog .year-name,
 .fs-datetime-dialog .month-name {
-    margin: 0;
     color: inherit;
-    font-size: inherit;
-    margin-right: 5px;
+    padding: 5px;
+    border-radius: 3px;
+    float: left;
 }
 
 .fs-datetime-dialog .month-year .md-select-value .md-select-icon {
@@ -177,30 +174,17 @@ fs-datetime md-input-container.md-block .md-input {
 	display: block;
 }
 
-.fs-datetime-dialog .day.selected,
-.fs-datetime-dialog .years .year.selected,
-.fs-datetime-dialog .months td.selected,
-.fs-datetime-dialog .time .hour.selected,
-.fs-datetime-dialog .time .minute.selected {
-    background: #4678AE;
-	color: #fff;
-}
-
-
 .fs-datetime-dialog .day.mute {
 	color: #d7d7d7;
 }
 
 .fs-datetime-dialog thead {
-	position: absolute;
-	top: 0;
-	z-index: 50;
-	min-width: 400px; /* so the days dont get squished */
 }
 
 .fs-datetime-dialog thead th {
 	width: 50px;
-	height: 50px;
+	vertical-align: top;
+	padding-bottom: 20px;
 	text-align: center;
 	border: 1px solid transparent;
 	background: #fff;
@@ -220,6 +204,7 @@ fs-datetime .lbl {
     overflow-x: hidden;
     width: 100%;
     position: relative;
+    min-height: 350px;
 }
 
 .fs-datetime-dialog .time {
@@ -257,9 +242,21 @@ fs-datetime .lbl {
 .fs-datetime-dialog .time .minute:hover:not(.disabled),
 .fs-datetime-dialog .day:hover,
 .fs-datetime-dialog .years .year:hover,
-.fs-datetime-dialog .months td:hover {
+.fs-datetime-dialog .months td:hover,
+.fs-datetime-dialog .year-name:hover,
+.fs-datetime-dialog .month-name:hover {
     background: rgba(70,120,174,.15);
 }
+
+.fs-datetime-dialog .day.selected,
+.fs-datetime-dialog .years .year.selected,
+.fs-datetime-dialog .months td.selected,
+.fs-datetime-dialog .time .hour.selected,
+.fs-datetime-dialog .time .minute.selected {
+    background: #4678AE;
+	color: #fff;
+}
+
 
 .fs-datetime-dialog .time .minutes {
 	margin-left: 15px;
@@ -310,16 +307,23 @@ fs-datetime .lbl {
 	font-size: 11px;
 }
 
+.fs-datetime-dialog .date-time {
+    overflow: auto;
+}
+
+.fs-datetime-dialog .months {
+	width: 100%;
+	height: 100%;
+}
+
 .fs-datetime-dialog .months table {
 	width: 100%;
-	overflow: hidden;
+	height: 100%;
 }
 
 .fs-datetime-dialog .months td {
 	width: 33.3333%;
 	text-align: center;
-	line-height: 87px;
-	border-collapse: collapse;
 	border: 1px solid #efefef;
 	cursor: pointer;
     outline: none;
@@ -421,19 +425,12 @@ fs-datetime-range .datetime-block .datetime-to {
 	    width: 100%;
 	}
 
-	.fs-datetime-dialog .date-time {
-	    height: 100% !important;
-	}
-
 	.fs-datetime-dialog .close {
 		display: flex;
 	}
 
 	.fs-datetime-dialog .done {
-		position: absolute;
-	    bottom: 0;
-	    z-index: 99999;
-	    width: 100%;
+		width: 100%;
 	    display: flex !important;
 	}
 
@@ -444,4 +441,8 @@ fs-datetime-range .datetime-block .datetime-to {
 	.fs-datetime-dialog .time {
 	    margin: 0 auto;
 	}
+}
+
+.pointerEventsNone {
+	pointer-events: none;
 }

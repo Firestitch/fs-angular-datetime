@@ -1,10 +1,10 @@
 <div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }">
-	<div class="wrap">
+	<div class="wrap" layout="column">
 		<fs-tabnav fs-selected="tab" ng-show="hasDate && hasTime">
 	        <fs-tabnav-item fs-name="date">Date</fs-tabnav-item>
 	        <fs-tabnav-item fs-name="time">Time</fs-tabnav-item>
     	</fs-tabnav>
-		<div layout="row" class="date-time">
+		<div layout="row" class="date-time" flex>
 			<div class="date" ng-show="tab=='date'" flex>
 				<div class="months" ng-if="view=='month'">
 					<table>
@@ -35,34 +35,37 @@
 					    {{::year}}
 					</div>
 				</div>
-				<table ng-if="hasCalendar && view=='calendar'" class="calendar">
-					<!-- <thead>
-						<tr>
-							<th>Sun</th>
-							<th>Mon</th>
-							<th>Tues</th>
-							<th>Wed</th>
-							<th>Thurs</th>
-							<th>Fri</th>
-							<th>Sat</th>
-						</tr>
-					</thead> -->
-					<tbody class="calendar calendar-{{::month.date}}" ng-repeat="month in months track by month.date">
-						<tr>
-							<td colspan="7" class="month-year">
-								<div layout="row">
-									<a href class="month-name" ng-click="monthView(month)">{{month.name}}</a>
-									<a href class="year-name" ng-click="yearView(month.year)">{{month.year}}</a>
-		                        </div>
-							</td>
-						</tr>
-						<tr class="week" ng-repeat="week in month.weeks">
-							<td ng-repeat="day in week track by day.number" class="day" ng-class="{ mute: day.mute, selected: day.date==selected.date && !day.mute, disabled: day.disabled }" ng-click="dayClick(day)">
-								<span>{{::day.number}}</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+				<div ng-if="hasCalendar && view=='calendar'" class="calendar">
+					<div class="month-year" layout="row" layout-align="start center">
+						<a href class="month-name" ng-click="monthView(month)">{{month.name}}</a>
+						<a href class="year-name" ng-click="yearView(month.year)">{{month.year}}</a>
+						<a href ng-click="yearView(month.year)" class="more"><md-icon>arrow_drop_down</md-icon></a>
+						<div flex class="actions">
+							<a href ng-click="previousMonth(month)"><md-icon>navigate_before</md-icon></a>
+							<a href ng-click="nextMonth(month)"><md-icon>navigate_next</md-icon></a>
+						</div>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Sun</th>
+								<th>Mon</th>
+								<th>Tues</th>
+								<th>Wed</th>
+								<th>Thurs</th>
+								<th>Fri</th>
+								<th>Sat</th>
+							</tr>
+						</thead>
+						<tbody class="calendar calendar-{{::month.date}}">
+							<tr class="week" ng-repeat="week in month.weeks">
+								<td ng-repeat="day in week track by day.number" class="day" ng-class="{ mute: day.mute, selected: day.date==selected.date && !day.mute, disabled: day.disabled }" ng-click="dayClick(day)">
+									<span>{{::day.number}}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
 				<div ng-if="view=='date'" layout="row" class="inline-date">
 					<div flex="33">
