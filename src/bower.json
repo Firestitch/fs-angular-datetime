@@ -13,7 +13,7 @@
     "fs-boilerplate-styles": "^1.0.0",
     "fs-angular-validate": "^1.0.0",
     "moment": ">=2.10.6",
-    "fs-angular-util": ">=1.0.27",
+    "fs-angular-util": ">=1.0.28",
     "fs-angular-model": ">=1.0.3",
     "fs-angular-tabnav": ">=1.2.0",
     "fs-angular-browser": ">=1.0.3",
