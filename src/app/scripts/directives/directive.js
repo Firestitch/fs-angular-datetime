@@ -241,7 +241,7 @@
 
 				        stack.push(el);
 
-				        if(angular.element(el).hasClass('backdrop')) {
+				        if(angular.element(el).hasClass('fs-datetime-backdrop')) {
 				        	setTimeout(function() {
 				        		angular.element(el).triggerHandler('click');
 				        	});

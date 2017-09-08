@@ -242,7 +242,7 @@
 
 				        stack.push(el);
 
-				        if(angular.element(el).hasClass('backdrop')) {
+				        if(angular.element(el).hasClass('fs-datetime-backdrop')) {
 				        	setTimeout(function() {
 				        		angular.element(el).triggerHandler('click');
 				        	});
@@ -816,7 +816,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\" class=\"{{class}}\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\" readonly><div class=\"hint\" ng-if=\"hint\">{{hint}}</div></md-input-container><div class=\"backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
+    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\" class=\"{{class}}\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\" readonly><div class=\"hint\" ng-if=\"hint\">{{hint}}</div></md-input-container><div class=\"fs-datetime-backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 

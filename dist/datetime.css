@@ -2,7 +2,7 @@ fs-datetime {
 	position: relative;
 }
 
-fs-datetime .backdrop {
+fs-datetime .fs-datetime-backdrop {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -50,7 +50,7 @@ fs-datetime md-input-container.md-block .md-input {
     z-index: 80;
     display: none;
     outline: none;
-    margin-top: 22px;
+    margin-top: 20px;
 }
 
 .fs-datetime-dialog.opened {
