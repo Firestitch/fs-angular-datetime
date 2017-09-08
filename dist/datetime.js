@@ -14,7 +14,6 @@
 			   hasTime: '=?fsTime',
 			   hasDate: '=?fsDate',
 			   hasCalendar: '=?fsCalendar',
-			   defaultTime: '@fsDefaultTime',
 			   hasRange: '=?fsRange',
 			   disabled: '=?fsDisabled',
 			   disabledDays: '=?fsDisabledDays',
@@ -231,15 +230,19 @@
 					var x = e.clientX,
 				        y = e.clientY,
 				        stack = [],
+				        tmp,
+				        el;
+
+				    do {
+
 				        el = document.elementFromPoint(x, y);
 
-				    stack.push(el);
-
-				    while(el.tagName !== 'HTML' && el.tagName !== 'FS-DATETIME') {
+				        var last = stack[stack.length - 1];
+				        if(last && last.isEqualNode(el)) {
+				        	break;
+				        }
 
 				        el.classList.add('pointer-events-none');
-				        el = document.elementFromPoint(x, y);
-
 				        stack.push(el);
 
 				        if(angular.element(el).hasClass('fs-datetime-backdrop')) {
@@ -248,7 +251,7 @@
 				        	});
 				        	break;
 				        }
-				    }
+				    } while(el.tagName !== 'HTML' && !el.tagName.match(/^FS-DATETIME/));
 
 				    for (var i=0;i < stack.length; i += 1) {
 				        stack[i].classList.remove('pointer-events-none');
