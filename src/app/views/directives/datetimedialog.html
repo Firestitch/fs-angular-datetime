@@ -1,4 +1,4 @@
-<div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, viewYears: view=='year' }">
+<div class="fs-datetime-dialog" tabindex="0" ng-class="{ opened: opened, 'has-date': hasDate, 'has-time': hasTime, 'has-calendar': hasCalendar, 'view-year': view=='year', 'view-month': view=='month', 'view-date': view=='date' }">
 	<div class="wrap" layout="column">
 		<fs-tabnav fs-selected="tab" ng-show="hasDate && hasTime">
 	        <fs-tabnav-item fs-name="date">Date</fs-tabnav-item>
