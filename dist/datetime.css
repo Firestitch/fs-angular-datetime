@@ -362,6 +362,10 @@ fs-datetime .lbl {
     overflow-y: visible;
 }
 
+fs-datetime-range {
+	display: inline;
+}
+
 fs-datetime-range .to {
 	padding: 0 4px;
 	padding-top: 26px;
@@ -443,6 +447,6 @@ fs-datetime-range .datetime-block .datetime-to {
 	}
 }
 
-.pointerEventsNone {
-	pointer-events: none;
+.pointer-events-none {
+	pointer-events: none !important;
 }

@@ -82,7 +82,7 @@
 										[55,56,57,58,59]];
 
 				$scope.$watch('disabledDays',function(disabled) {
-					if(disabled!==undefined) {
+					if(disabled!==undefined && $scope.month) {
 						angular.forEach($scope.month.weeks,function(week) {
 							angular.forEach(week,function(day) {
 								day.disabled = isDayDisabled(moment(day.date));
@@ -235,9 +235,9 @@
 
 				    stack.push(el);
 
-				    while(el.tagName !== 'HTML'){
+				    while(el.tagName !== 'HTML' && el.tagName !== 'FS-DATETIME') {
 
-				        el.classList.add('pointerEventsNone');
+				        el.classList.add('pointer-events-none');
 				        el = document.elementFromPoint(x, y);
 
 				        stack.push(el);
@@ -251,7 +251,7 @@
 				    }
 
 				    for (var i=0;i < stack.length; i += 1) {
-				        stack[i].classList.remove('pointerEventsNone');
+				        stack[i].classList.remove('pointer-events-none');
 				    }
 
 				    $scope.open();
