@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model','fs-angular-tabnav'])
+	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model','fs-angular-tabnav','fs-angular-element'])
 	.directive('fsDatetime', function(fsUtil, $templateCache, $http, $compile, fsBrowser, $timeout, $q, fsDatetime) {
 		return {
 			restrict: 'E',
@@ -27,6 +27,9 @@
 			   minYear: '@fsMinYear',
 			   maxYear: '@fsMaxYear',
                hint: '@fsHint'
+			},
+			controller: function($scope) {
+				$scope.element = {};
 			},
 			link: function($scope, $el, attrs, model) {
 
@@ -191,6 +194,10 @@
 
 				$scope.monthView = function(month) {
 					$scope.view = 'month';
+				}
+
+				$scope.inputFocus = function($event) {
+					$scope.element.blur();
 				}
 
 				$scope.yearView = function(year) {
@@ -658,6 +665,10 @@
 						$compile($scope.$dialog)($scope);
 						service.$date = $scope.$dialog[0].querySelector('.date');
 						angular.element(service.$date).on('mousewheel',dateScroll);
+
+						angular.element($scope.$dialog).on('mousewheel',function(e) {
+							e.preventDefault();
+						});
 					});
 				});
 
@@ -665,6 +676,7 @@
 
 				$scope.$on('$destroy',function() {
 					angular.element(service.$date).off('mousewheel',dateScroll);
+					angular.element($scope.$dialog).off('mousewheel',dateScroll);
 					angular.element(window).off('resize',windowResize);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();
@@ -819,7 +831,7 @@ angular.module('fs-angular-datetime').run(['$templateCache', function($templateC
   'use strict';
 
   $templateCache.put('views/directives/datetime.html',
-    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\" class=\"{{class}}\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\" readonly><div class=\"hint\" ng-if=\"hint\">{{hint}}</div></md-input-container><div class=\"fs-datetime-backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
+    "<md-input-container ng-class=\"{ 'has-time': hasTime, 'has-date': hasDate }\" class=\"{{class}}\"><label>{{label}}</label><input ng-model=\"input\" type=\"text\" ng-click=\"inputClick($event)\" ng-keyup=\"inputKeyup($event)\" ng-focus=\"inputFocus($event)\" ng-model-options=\"{ debounce: 300 }\" ng-required=\"required\" name=\"{{name}}\" fs-element=\"element\" aria-label=\"input\" size=\"{{inputLength || 1}}\" ng-disabled=\"disabled\" readonly><div class=\"hint\" ng-if=\"hint\">{{hint}}</div></md-input-container><div class=\"fs-datetime-backdrop ng-hide\" ng-show=\"opened\" ng-click=\"close($event)\"></div>"
   );
 
 

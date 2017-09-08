@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model','fs-angular-tabnav'])
+	angular.module('fs-angular-datetime',['fs-angular-util','fs-angular-browser','fs-angular-model','fs-angular-tabnav','fs-angular-element'])
 	.directive('fsDatetime', function(fsUtil, $templateCache, $http, $compile, fsBrowser, $timeout, $q, fsDatetime) {
 		return {
 			restrict: 'E',
@@ -26,6 +26,9 @@
 			   minYear: '@fsMinYear',
 			   maxYear: '@fsMaxYear',
                hint: '@fsHint'
+			},
+			controller: function($scope) {
+				$scope.element = {};
 			},
 			link: function($scope, $el, attrs, model) {
 
@@ -190,6 +193,10 @@
 
 				$scope.monthView = function(month) {
 					$scope.view = 'month';
+				}
+
+				$scope.inputFocus = function($event) {
+					$scope.element.blur();
 				}
 
 				$scope.yearView = function(year) {
@@ -657,6 +664,10 @@
 						$compile($scope.$dialog)($scope);
 						service.$date = $scope.$dialog[0].querySelector('.date');
 						angular.element(service.$date).on('mousewheel',dateScroll);
+
+						angular.element($scope.$dialog).on('mousewheel',function(e) {
+							e.preventDefault();
+						});
 					});
 				});
 
@@ -664,6 +675,7 @@
 
 				$scope.$on('$destroy',function() {
 					angular.element(service.$date).off('mousewheel',dateScroll);
+					angular.element($scope.$dialog).off('mousewheel',dateScroll);
 					angular.element(window).off('resize',windowResize);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();

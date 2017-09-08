@@ -17,7 +17,8 @@
     "fs-angular-model": ">=1.0.3",
     "fs-angular-tabnav": ">=1.2.0",
     "fs-angular-browser": ">=1.0.3",
-    "fs-angular-modal": ">=1.3.1"
+    "fs-angular-modal": ">=1.3.1",
+    "fs-angular-element": ">=1.1.0"
   },
   "resolutions": {
     "angular": "1.6.3"
