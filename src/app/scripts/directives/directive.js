@@ -36,6 +36,7 @@
 				$scope.$dialog = null;
 				$scope.hasDate = $scope.hasDate || $scope.hasDate===undefined;
 				$scope.tab = $scope.hasDate ? 'date' : 'time';
+				$scope.months = ['Jan','Feb','Mar','Apr','May', 'June','July','Aug','Sept','Oct', 'Nov','Dec'];
 
 				var isFirefox = fsBrowser.firefox();
 				var monthPadding = 3;
@@ -200,13 +201,8 @@
 				}
 
 				$scope.yearView = function(year) {
+					$scope.iscrollOptions = { scrollToElement: '.years [data-year="' + year + '"]' };
 					$scope.view = 'year';
-					setTimeout(angular.bind(this,function() {
-						var el = service.$date.querySelector('.years [data-year="' + year + '"]');
-						if(el) {
-							angular.element(service.$date.querySelector('.years')).prop('scrollTop',el.offsetTop);
-						}
-					}),50);
 				}
 
 				function documentKeyup(e) {
@@ -655,7 +651,7 @@
 				var runningAppenedPromises = false;
 				var again = false;
 				var  running = false;
-				setTimeout(function() {
+
 					$http.get('views/directives/datetimedialog.html', {
 						cache: $templateCache
 					}).then(function(response) {
@@ -663,13 +659,18 @@
 						angular.element(document.body).append($scope.$dialog);
 						$compile($scope.$dialog)($scope);
 						service.$date = $scope.$dialog[0].querySelector('.date');
+
 						angular.element(service.$date).on('mousewheel',dateScroll);
 
-						angular.element($scope.$dialog).on('mousewheel',function(e) {
+						angular.element($scope.$dialog[0]).on('mousewheel',function(e) {
+							e.preventDefault();
+						});
+
+						angular.element($scope.$dialog[0]).on('touchmove touchstart',function(e) {
 							e.preventDefault();
 						});
 					});
-				});
+
 
 				angular.element(window).on('resize',windowResize);
 
@@ -779,6 +780,52 @@
 				$scope.maxYear = parseInt(moment().format('YYYY'));
 			}
 		}
-	});
+	})
+	.directive('fsIscroll',function() {
+  		return {
+    		replace: false,
+    		restrict: 'A',
+    		scope: {
+    			instance: '=?fsInstance',
+    			options: '=?fsOptions'
+    		},
+    		link: function ($scope, element, attr) {
+
+		    	$scope.options = angular.extend({
+			        momentum: false,
+			        hScrollbar: false,
+			        mouseWheel: true
+			    },$scope.options);
+
+		      	if(!$scope.instance) {
+		      		$scope.instance = {}
+		      	}
+
+		      	setTimeout(function() {
+		      		var instance = new IScroll(element[0], $scope.options);
+
+		      		if($scope.options.scrollToElement) {
+		        		instance.scrollToElement($scope.options.scrollToElement,0);
+		        	}
+
+		        	if($scope.options.scrollTo) {
+		        		instance.scrollTo($scope.options.scrollTo.x,$scope.options.scrollTo.y,$scope.options.scrollTo.time);
+		        	}
+
+		        	if($scope.instance) {
+		        		Object.assign($scope.instance,instance);
+		        		Object.setPrototypeOf($scope.instance,instance);
+		        	}
+		        });
+
+		    	$scope.$on('$destroy', function () {
+		        	$scope.instance.destroy();
+		    	});
+		    }
+		  };
+		});
 
 })();
+
+
+

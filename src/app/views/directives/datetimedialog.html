@@ -7,32 +7,14 @@
 		<div layout="row" class="date-time" flex>
 			<div class="date" ng-show="tab=='date'" flex>
 				<div class="months" ng-if="view=='month'">
-					<table>
-						<tr>
-							<td ng-click="monthViewChange(1)" ng-class="{ selected: selected.month==1 }">Jan</td>
-							<td ng-click="monthViewChange(2)" ng-class="{ selected: selected.month==2 }">Feb</td>
-							<td ng-click="monthViewChange(3)" ng-class="{ selected: selected.month==3 }">Mar</td>
-						</tr>
-						<tr>
-							<td ng-click="monthViewChange(4)" ng-class="{ selected: selected.month==4 }">Apr</td>
-							<td ng-click="monthViewChange(5)" ng-class="{ selected: selected.month==5 }">May</td>
-							<td ng-click="monthViewChange(6)" ng-class="{ selected: selected.month==6 }">Jun</td>
-						</tr>
-						<tr>
-							<td ng-click="monthViewChange(7)" ng-class="{ selected: selected.month==7 }">Jul</td>
-							<td ng-click="monthViewChange(8)" ng-class="{ selected: selected.month==8 }">Aug</td>
-							<td ng-click="monthViewChange(9)" ng-class="{ selected: selected.month==9 }">Sept</td>
-						</tr>
-						<tr>
-							<td ng-click="monthViewChange(10)" ng-class="{ selected: selected.month==10 }">Oct</td>
-							<td ng-click="monthViewChange(11)" ng-class="{ selected: selected.month==11 }">Nov</td>
-							<td ng-click="monthViewChange(12)" ng-class="{ selected: selected.month==12 }">Dec</td>
-						</tr>
-					</table>
+					<div ng-repeat="(index,month) in months" ng-click="monthViewChange($index + 1)" class="month" ng-class="{ selected: selected.month==($index + 1) }">{{month}}</div>
 				</div>
-				<div class="years" ng-if="view=='year'">
-					<div ng-repeat="year in years" class="year" data-year="{{::year}}" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
-					    {{::year}}
+				<div class="years" ng-if="view=='year'" fs-iscroll fs-options="iscrollOptions" fs-instance="iscrollInstance">
+					<div class="iscroll-scroller">
+						<div ng-repeat="year in years" class="year" data-year="{{::year}}" ng-class="{ row : ($index % 4 == 0), selected: selected.year==year }" ng-click="yearViewChange(year)">
+						    {{::year}}
+						</div>
+						<div class="clear"></div>
 					</div>
 				</div>
 				<div ng-if="hasCalendar && view=='calendar'" class="calendar">
