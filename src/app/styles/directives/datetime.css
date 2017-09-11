@@ -373,7 +373,6 @@ fs-datetime .lbl {
 
 .fs-datetime-dialog .years .year.row {
 	clear: both;
-	margin-left: -4px;
 }
 
 .fs-datetime-dialog .view-year .date {
