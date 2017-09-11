@@ -203,7 +203,6 @@
 
 				$scope.yearView = function(year) {
 					$scope.iscrollOptions = { scrollToElement: '.years [data-year="' + year + '"]' };
-					$scope.iscrollInstance = {};
 					$scope.view = 'year';
 				}
 

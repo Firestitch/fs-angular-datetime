@@ -15,6 +15,13 @@
     "fs-angular-element": ">=1.1.0",
     "iscroll": "5.2.0"
   },
+  "overrides": {
+    "iscroll": {
+    	"main": [
+        	"build/iscroll.js"
+      	]
+    }
+  },
   "authors": [
     "Firestitch Inc."
   ],
