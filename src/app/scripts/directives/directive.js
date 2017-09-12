@@ -36,7 +36,6 @@
 				$scope.$dialog = null;
 				$scope.hasDate = $scope.hasDate || $scope.hasDate===undefined;
 				$scope.tab = $scope.hasDate ? 'date' : 'time';
-				$scope.months = ['Jan','Feb','Mar','Apr','May', 'June','July','Aug','Sept','Oct', 'Nov','Dec'];
 
 				var isFirefox = fsBrowser.firefox();
 				var monthPadding = 3;
@@ -51,24 +50,26 @@
 
 				$scope.hasDate = $scope.hasDate===undefined ? true : $scope.hasDate;
 				$scope.hasCalendar = $scope.hasCalendar===undefined ? true : $scope.hasCalendar;
-
+				$scope.today = { 	date: moment().format('YYYY-MM-DD'),
+									month: moment().format('M'),
+									year: parseInt(moment().format('YYYY')) };
 				$scope.dateDays = [];
 				$scope.opened = false;
 				$scope.input = '';
 				$scope.selected = {};
 				$scope.name = fsUtil.guid();
-				$scope.monthList = [{ value: 1, name: 'January' },
-									{ value: 2, name: 'February' },
-									{ value: 3, name: 'March' },
-									{ value: 4, name: 'April' },
-									{ value: 5, name: 'May' },
-									{ value: 6, name: 'June' },
-									{ value: 7, name: 'July' },
-									{ value: 8, name: 'August' },
-									{ value: 9, name: 'September' },
-									{ value: 10, name: 'October' },
-									{ value: 11, name: 'November' },
-									{ value: 12, name: 'December' }];
+				$scope.monthList = [{ value: 1, name: 'January', abr: 'Jan' },
+									{ value: 2, name: 'February', abr: 'Feb' },
+									{ value: 3, name: 'March', abr: 'Mar' },
+									{ value: 4, name: 'April', abr: 'Apr' },
+									{ value: 5, name: 'May', abr: 'May' },
+									{ value: 6, name: 'June', abr: 'June' },
+									{ value: 7, name: 'July', abr: 'July' },
+									{ value: 8, name: 'August', abr: 'Aug' },
+									{ value: 9, name: 'September', abr: 'Sept' },
+									{ value: 10, name: 'October', abr: 'Oct' },
+									{ value: 11, name: 'November', abr: 'Nov' },
+									{ value: 12, name: 'December', abr: 'Dec' }];
 				$scope.timeHours = [[0,12],[1,13],[2,14],[3,15],[4,16],[5,17],[6,18],[7,19],[8,20],[9,21],[10,22],[11,23]];
 				$scope.timeMinutes = [	[0,1,2,3,4],
 										[5,6,7,8,9],
@@ -205,12 +206,13 @@
 					$scope.view = 'year';
 				}
 
-				function documentKeyup(e) {
-				   	if(e.keyCode == 27) {
+				function documentKeydown(e) {
+					if(e.keyCode == 27) {
 				    	$scope.$apply(function() {
 				    		$scope.close();
 				    	});
 				    }
+					e.preventDefault();
 				}
 
 				$scope.open = function() {
@@ -235,6 +237,7 @@
 							angular.element($scope.$dialog[0]).on('touchmove',function(e) {
 								e.preventDefault();
 							});
+
 							resolve();
 						});
 
@@ -250,7 +253,7 @@
 						}
 
 						setTimeout(positionDialog);
-						angular.element(document).on('keyup',documentKeyup);
+						angular.element(document).on('keydown',documentKeydown);
 					});
 				}
 
@@ -299,7 +302,7 @@
 
 				$scope.close = function(e) {
 					$scope.opened = false;
-					angular.element(document).off('keyup',documentKeyup);
+					angular.element(document).off('keydown',documentKeydown);
 				}
 
 				$scope.dayClick = function(day) {
@@ -674,11 +677,6 @@
 					service.positionDialog();
 				},50);
 
-				var appendPromises = [];
-				var runningAppenedPromises = false;
-				var again = false;
-				var running = false;
-
 				$http.get('views/directives/datetimedialog.html', {
 					cache: $templateCache
 				}).then(function(response) {
@@ -688,8 +686,6 @@
 				angular.element(window).on('resize',windowResize);
 
 				$scope.$on('$destroy',function() {
-					angular.element(service.$date).off('mousewheel',dateScroll);
-					angular.element($scope.$dialog).off('mousewheel',dateScroll);
 					angular.element(window).off('resize',windowResize);
 					if($scope.$dialog) {
 						$scope.$dialog.remove();
