@@ -3,7 +3,7 @@
   "description": "",
   "main": [
     "dist/datetime.js",
-    "vendors/iscroll/iscroll.js",
+    "dist/vendors/iscroll/iscroll.js",
     "dist/datetime.css"
   ],
   "dependencies": {

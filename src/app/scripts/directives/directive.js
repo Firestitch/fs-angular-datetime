@@ -818,8 +818,10 @@
 		        	}
 		        });
 
-		    	$scope.$on('$destroy', function () {
-		        	$scope.instance.destroy();
+		    	$scope.$on('$destroy',function() {
+		        	if($scope.instance) {
+		        		$scope.instance.destroy();
+		        	}
 		    	});
 		    }
 		  };
