@@ -807,7 +807,8 @@
 		    	$scope.options = angular.extend({
 			        momentum: false,
 			        hScrollbar: false,
-			        mouseWheel: true
+			        mouseWheel: true,
+			        click: true
 			    },$scope.options);
 
 		      	if(!$scope.instance) {
