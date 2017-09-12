@@ -214,17 +214,44 @@
 				}
 
 				$scope.open = function() {
-					drawMonths($scope.model);
-					positionDialog();
-					$scope.opened = true;
-					$scope.view = 'calendar';
 
-					if(!$scope.hasCalendar) {
-						$scope.view = 'date';
-					}
+					$q(function(resolve) {
+						if($scope.$dialog) {
+							return resolve();
+						}
 
-					setTimeout(positionDialog);
-					angular.element(document).on('keyup',documentKeyup);
+						$scope.$dialog = angular.element($templateCache.get('views/directives/datetimedialog.html'));
+						angular.element(document.body).append($scope.$dialog);
+						$compile($scope.$dialog)($scope);
+						setTimeout(function() {
+							service.$date = $scope.$dialog[0].querySelector('.date');
+
+							angular.element(service.$date).on('mousewheel',dateScroll);
+
+							angular.element($scope.$dialog[0]).on('mousewheel',function(e) {
+								e.preventDefault();
+							});
+
+							angular.element($scope.$dialog[0]).on('touchmove',function(e) {
+								e.preventDefault();
+							});
+							resolve();
+						});
+
+					}).then(function() {
+
+						drawMonths($scope.model);
+						positionDialog();
+						$scope.opened = true;
+						$scope.view = 'calendar';
+
+						if(!$scope.hasCalendar) {
+							$scope.view = 'date';
+						}
+
+						setTimeout(positionDialog);
+						angular.element(document).on('keyup',documentKeyup);
+					});
 				}
 
 				$scope.inputClick = function(e) {
@@ -650,27 +677,13 @@
 				var appendPromises = [];
 				var runningAppenedPromises = false;
 				var again = false;
-				var  running = false;
+				var running = false;
 
-					$http.get('views/directives/datetimedialog.html', {
-						cache: $templateCache
-					}).then(function(response) {
-						$scope.$dialog = angular.element(response.data);
-						angular.element(document.body).append($scope.$dialog);
-						$compile($scope.$dialog)($scope);
-						service.$date = $scope.$dialog[0].querySelector('.date');
-
-						angular.element(service.$date).on('mousewheel',dateScroll);
-
-						angular.element($scope.$dialog[0]).on('mousewheel',function(e) {
-							e.preventDefault();
-						});
-
-						angular.element($scope.$dialog[0]).on('touchmove touchstart',function(e) {
-							e.preventDefault();
-						});
-					});
-
+				$http.get('views/directives/datetimedialog.html', {
+					cache: $templateCache
+				}).then(function(response) {
+					$templateCache.put('views/directives/datetimedialog.html',response.data);
+				});
 
 				angular.element(window).on('resize',windowResize);
 
