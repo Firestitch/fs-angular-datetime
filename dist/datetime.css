@@ -515,6 +515,14 @@ fs-datetime-range .datetime-block .datetime-to {
 	}
 }
 
+@media only screen and (max-width: 400px) {
+	.fs-datetime-dialog .day {
+    	height: 40px;
+    	line-height: 40px;
+	}
+}
+
 .pointer-events-none {
 	pointer-events: none !important;
 }
+
