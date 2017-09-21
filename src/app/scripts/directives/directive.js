@@ -555,12 +555,10 @@
 					var input = $scope.$el.find('input');
 					var inputBound = input[0].getBoundingClientRect();
 					var dialogBound = $scope.$dialog[0].getBoundingClientRect();
-
 					var top = parseInt(inputBound.top) + inputBound.height;
-
-
 					var css = { top: '', bottom: '', left: '', right: '' };
-					if((top + 20 + dialogBound.height)>window.innerHeight) {
+
+					if((top + fsUtil.int($scope.$dialog[0].style.marginTop) + dialogBound.height)>window.innerHeight) {
 						css.bottom = '10px';
 						$scope.$dialog.addClass('vertical-reposition');
 					} else {
