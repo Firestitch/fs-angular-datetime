@@ -549,19 +549,19 @@
 
 				function positionDialog() {
 
-					if(!$scope.$dialog || !$scope.$dialog.length || window.innerWidth<500)
+					if(!$scope.$dialog || !$scope.$dialog.length || window.innerWidth<500) {
 						return;
+					}
 
 					var input = $scope.$el.find('input');
 					var inputBound = input[0].getBoundingClientRect();
 					var dialogBound = $scope.$dialog[0].getBoundingClientRect();
 
 					var top = parseInt(inputBound.top) + inputBound.height;
-					var left = parseInt(inputBound.left);
+
 
 					var css = { top: '', bottom: '', left: '', right: '' };
-
-					if((top + dialogBound.height)>window.innerHeight) {
+					if((top + 20 + dialogBound.height)>window.innerHeight) {
 						css.bottom = '10px';
 						$scope.$dialog.addClass('vertical-reposition');
 					} else {
@@ -569,6 +569,7 @@
 						$scope.$dialog.removeClass('vertical-reposition');
 					}
 
+					var left = parseInt(inputBound.left);
 					if((left + dialogBound.width)>window.innerWidth) {
 						css.right = '10px';
 						$scope.$dialog.addClass('horizontal-reposition');

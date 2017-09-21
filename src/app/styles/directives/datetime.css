@@ -49,12 +49,13 @@ fs-datetime md-input-container.md-block .md-input {
 	position: fixed;
     z-index: 80;
     display: none;
-    outline: none;
+    visibility: hidden;
+    display: block;
     margin-top: 20px;
 }
 
 .fs-datetime-dialog.opened {
-	display: block;
+	visibility: visible;
 }
 
 .fs-datetime-dialog * {
