@@ -217,6 +217,13 @@
 
 				$scope.open = function() {
 
+					$scope.opened = true;
+					$scope.view = 'calendar';
+
+					if(!$scope.hasCalendar) {
+						$scope.view = 'date';
+					}
+
 					$q(function(resolve) {
 						if($scope.$dialog) {
 							return resolve();
@@ -242,16 +249,7 @@
 						});
 
 					}).then(function() {
-
 						drawMonths($scope.model);
-						positionDialog();
-						$scope.opened = true;
-						$scope.view = 'calendar';
-
-						if(!$scope.hasCalendar) {
-							$scope.view = 'date';
-						}
-
 						setTimeout(positionDialog);
 						angular.element(document).on('keydown',documentKeydown);
 					});
