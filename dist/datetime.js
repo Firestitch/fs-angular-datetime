@@ -172,7 +172,9 @@
 					}
 				}
 
-				updateDateDays();
+				$timeout(function() {
+					updateDateDays();
+				});
 
 				function createModel() {
 					if(!$scope.model) {
