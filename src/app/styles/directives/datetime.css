@@ -314,7 +314,8 @@ fs-datetime .lbl {
 }
 
 .fs-datetime-dialog .date-time {
-    overflow: auto;
+	overflow: auto;
+	flex: 0 0 auto;
 }
 
 .fs-datetime-dialog .months {
